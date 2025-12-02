@@ -16,7 +16,9 @@
       "Bash(npm install @supabase/supabase-js)",
       "Bash(git init)",
       "Bash(git add .)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: AI Scent platform\n\n- Next.js App Router with product discovery pages\n- AI-powered product analysis system\n- Data ingestion pipeline (Firecrawl/Playwright + LLM)\n- Supabase database integration\n- Tailwind CSS styling\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: AI Scent platform\n\n- Next.js App Router with product discovery pages\n- AI-powered product analysis system\n- Data ingestion pipeline (Firecrawl/Playwright + LLM)\n- Supabase database integration\n- Tailwind CSS styling\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git branch -M main)",
+      "Bash(git push -u origin main)"
     ],
     "deny": [],
     "ask": []
