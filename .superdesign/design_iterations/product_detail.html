@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammarly - AI Scent</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="theme_minimalist.css">
+
+    <style>
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all var(--duration-normal) var(--ease-out);
+            border: 1px solid var(--primary);
+            cursor: pointer;
+            font-size: 0.9375rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: oklch(0.15 0 0);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--foreground);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all var(--duration-normal) var(--ease-out);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.9375rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background-color: oklch(0.99 0 0);
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--muted);
+            color: var(--muted-foreground);
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border);
+        }
+
+        .animated-link {
+            position: relative;
+            text-decoration: none;
+            color: var(--foreground);
+        }
+
+        .animated-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width var(--duration-normal) var(--ease-out);
+        }
+
+        .animated-link:hover::after {
+            width: 100%;
+        }
+
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .product-logo-large {
+            width: 96px;
+            height: 96px;
+            background: var(--muted);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .section-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .analysis-section {
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .analysis-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .review-card {
+            background: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .review-card:hover {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+        }
+
+        .breadcrumb a {
+            color: var(--foreground);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header fixed top-0 left-0 right-0 z-50 h-20">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="ai_scent_home_4.html" class="logo">AI Scent 🔬</a>
+            <nav class="flex items-center gap-8">
+                <a href="directory.html" class="animated-link text-sm font-medium">发现</a>
+                <a href="archives.html" class="animated-link text-sm font-medium">往期</a>
+                <a href="#about" class="animated-link text-sm font-medium">关于</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="pt-28 pb-20 px-6">
+        <div class="max-w-5xl mx-auto">
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <a href="ai_scent_home_4.html">首页</a>
+                <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                <a href="directory.html">产品库</a>
+                <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                <span>Grammarly</span>
+            </div>
+
+            <!-- Product Header -->
+            <div class="section-card">
+                <div class="flex items-start gap-6 mb-6">
+                    <div class="product-logo-large">
+                        <i data-lucide="pen-tool" style="width: 48px; height: 48px; color: var(--muted-foreground);"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h1 class="text-3xl font-bold mb-2">Grammarly for Students</h1>
+                        <p class="text-lg text-gray-600 mb-4">AI 驱动的学术写作助手</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tag">#写作</span>
+                            <span class="tag">#学术</span>
+                            <span class="tag">#英文</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="btn-primary">
+                                <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                                访问官网
+                            </button>
+                            <button class="btn-secondary">
+                                <i data-lucide="bookmark" style="width: 16px; height: 16px;"></i>
+                                收藏
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta Info -->
+                <div class="flex items-center gap-6 text-sm text-gray-600 pt-4 border-t border-gray-200">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                        <span>拆解日期：2025.11.27</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+                        <span>拆解层级：5 层</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                        <span>阅读时长：8 分钟</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Analysis -->
+            <div class="section-card">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="microscope" style="width: 24px; height: 24px;"></i>
+                    AI 深度拆解
+                </h2>
+
+                <!-- Layer 1: Design Philosophy -->
+                <div class="analysis-section">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="lightbulb" style="width: 20px; height: 20px;"></i>
+                        设计灵魂：让写作成为思考的延伸
+                    </h3>
+                    <div class="text-gray-700 space-y-3">
+                        <p>
+                            Grammarly 的核心理念不仅仅是纠正语法错误，而是希望通过 AI 理解用户的写作意图，提供实时的写作建议，让用户可以专注于思考内容本身，而不被语法、拼写等细节所束缚。
+                        </p>
+                        <p>
+                            产品团队认为，优秀的写作工具应该是"隐形的伙伴"——在用户需要的时候提供帮助，而不打断创作流程。这种设计哲学体现在产品的每一个交互细节中。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Layer 2: Architecture -->
+                <div class="analysis-section">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="network" style="width: 20px; height: 20px;"></i>
+                        技术架构：NLP + 实时协作引擎
+                    </h3>
+                    <div class="text-gray-700 space-y-3">
+                        <p>
+                            <strong>核心技术栈：</strong>
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>基于 Transformer 的大规模语言模型，训练数据超过 10 亿份文本</li>
+                            <li>上下文理解引擎：分析整段文字的语义，而非单纯的语法规则</li>
+                            <li>实时同步架构：毫秒级响应，支持多平台同步（Web、Desktop、Mobile）</li>
+                            <li>插件系统：可嵌入 Word、Google Docs、Gmail 等第三方平台</li>
+                        </ul>
+                        <p>
+                            特别值得一提的是，Grammarly 的边缘计算策略让大部分基础检查在本地完成，只有复杂的语义分析才会调用云端 API，既保证了隐私，又提升了响应速度。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Layer 3: Target Users -->
+                <div class="analysis-section">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="users" style="width: 20px; height: 20px;"></i>
+                        目标人群：学术写作者 + 非母语写作者
+                    </h3>
+                    <div class="text-gray-700 space-y-3">
+                        <p>
+                            Grammarly 的核心用户画像：
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li><strong>学术研究者：</strong>需要撰写论文、报告，对语言准确性要求高</li>
+                            <li><strong>国际学生：</strong>英语非母语，需要辅助工具提升写作质量</li>
+                            <li><strong>职场人士：</strong>频繁撰写邮件、文档，需要专业的表达</li>
+                        </ul>
+                        <p>
+                            针对这些用户，Grammarly 提供了差异化的功能：学术版本强化引用检查和学术风格建议，商务版本则侧重于语气调整和专业表达。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Layer 4: Core Features -->
+                <div class="analysis-section">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="package" style="width: 20px; height: 20px;"></i>
+                        核心功能模块
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-medium mb-2">1. 实时语法检查</h4>
+                            <p class="text-sm text-gray-600">覆盖 400+ 语法规则，支持上下文分析，准确率超过 95%</p>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">2. 风格与语气建议</h4>
+                            <p class="text-sm text-gray-600">根据写作场景（正式、友好、自信等）调整表达方式</p>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">3. 抄袭检测</h4>
+                            <p class="text-sm text-gray-600">对比 160 亿网页内容，确保原创性</p>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">4. 引用管理</h4>
+                            <p class="text-sm text-gray-600">支持 MLA、APA、Chicago 等多种引用格式</p>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">5. 词汇增强</h4>
+                            <p class="text-sm text-gray-600">提供同义词建议，丰富表达方式</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layer 5: Business Model -->
+                <div class="analysis-section">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <i data-lucide="trending-up" style="width: 20px; height: 20px;"></i>
+                        商业模式：Freemium + 订阅制
+                    </h3>
+                    <div class="text-gray-700 space-y-3">
+                        <p>
+                            Grammarly 采用经典的 Freemium 模式：
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li><strong>免费版：</strong>基础语法检查，满足日常需求</li>
+                            <li><strong>Premium（$12/月）：</strong>高级建议、抄袭检测、语气调整</li>
+                            <li><strong>Business（$15/月/人）：</strong>团队协作、品牌风格指南、优先支持</li>
+                        </ul>
+                        <p>
+                            通过免费版吸引大量用户，再通过高级功能转化为付费订阅，Grammarly 的用户转化率约为 15%，年收入超过 2 亿美元。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Third-party Reviews (情报局) -->
+            <div class="section-card">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="radio" style="width: 24px; height: 24px;"></i>
+                    情报局：第三方评价
+                </h2>
+
+                <!-- Review 1 -->
+                <div class="review-card">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 bg-red-100 rounded flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="youtube" style="width: 20px; height: 20px; color: #ff0000;"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-1">Grammarly 真的值得付费吗？深度测评</h4>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>AI 摘要：</strong>UP主对比了免费版和付费版的差异，认为对于非母语写作者来说，付费版的价值主要体现在语气调整和高级建议上，但抄袭检测功能对学生群体帮助很大。
+                            </p>
+                            <a href="#" class="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                                查看原文
+                                <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="review-card">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="newspaper" style="width: 20px; height: 20px; color: var(--muted-foreground);"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-1">Grammarly vs. ChatGPT：谁更适合学术写作？</h4>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>AI 摘要：</strong>文章对比了两者的优劣，Grammarly 在专业性和准确性上更胜一筹，但 ChatGPT 在创意辅助和大纲生成上表现更好。建议两者结合使用。
+                            </p>
+                            <a href="#" class="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                                查看原文
+                                <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="review-card">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="twitter" style="width: 20px; height: 20px; color: #1da1f2;"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold mb-1">留学生必备工具推荐</h4>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>AI 摘要：</strong>博主作为留学生，分享了使用 Grammarly 3 年的心得，特别强调了它对提升学术写作信心的帮助，以及与 Word 的无缝集成体验。
+                            </p>
+                            <a href="#" class="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                                查看原文
+                                <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <div class="mt-12">
+                <h2 class="text-2xl font-semibold mb-6">相关产品</h2>
+                <div class="grid grid-cols-3 gap-6">
+                    <a href="#" class="border border-gray-200 rounded-lg p-4 hover:border-gray-900 transition-colors">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded mx-auto mb-3 flex items-center justify-center">
+                                <i data-lucide="file-text" style="width: 24px; height: 24px; color: var(--muted-foreground);"></i>
+                            </div>
+                            <h3 class="font-semibold mb-1">ChatPDF</h3>
+                            <p class="text-sm text-gray-600">对话式阅读</p>
+                        </div>
+                    </a>
+
+                    <a href="#" class="border border-gray-200 rounded-lg p-4 hover:border-gray-900 transition-colors">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded mx-auto mb-3 flex items-center justify-center">
+                                <i data-lucide="book-open" style="width: 24px; height: 24px; color: var(--muted-foreground);"></i>
+                            </div>
+                            <h3 class="font-semibold mb-1">Notion AI</h3>
+                            <p class="text-sm text-gray-600">知识管理</p>
+                        </div>
+                    </a>
+
+                    <a href="#" class="border border-gray-200 rounded-lg p-4 hover:border-gray-900 transition-colors">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-gray-100 rounded mx-auto mb-3 flex items-center justify-center">
+                                <i data-lucide="graduation-cap" style="width: 24px; height: 24px; color: var(--muted-foreground);"></i>
+                            </div>
+                            <h3 class="font-semibold mb-1">Scite.ai</h3>
+                            <p class="text-sm text-gray-600">引用分析</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="text-sm text-gray-600">
+                    AI Scent © 2025
+                </div>
+                <div class="flex gap-6 text-sm">
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">关于</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">联系</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">隐私</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

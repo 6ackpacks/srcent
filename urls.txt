@@ -1,0 +1,104 @@
+# AI Scent 待处理 URL 列表
+# 每行一个 URL，# 开头的行为注释
+# 运行: npm run ingest
+
+# ============================================
+# AI 对话 & 助手
+# ============================================
+https://chat.openai.com
+https://claude.ai
+https://gemini.google.com
+https://poe.com
+https://character.ai
+https://pi.ai
+https://perplexity.ai
+
+# ============================================
+# AI 图像生成
+# ============================================
+https://midjourney.com
+https://stability.ai
+https://leonardo.ai
+https://playground.com
+https://ideogram.ai
+https://krea.ai
+https://civitai.com
+
+# ============================================
+# AI 视频生成
+# ============================================
+https://runwayml.com
+https://pika.art
+https://klingai.com
+https://hailuoai.video
+https://luma.ai
+https://heygen.com
+https://synthesia.io
+
+# ============================================
+# AI 写作 & 文档
+# ============================================
+https://notion.so
+https://gamma.app
+https://jasper.ai
+https://copy.ai
+https://writesonic.com
+https://grammarly.com
+https://quillbot.com
+
+# ============================================
+# AI 编程 & 代码
+# ============================================
+https://cursor.com
+https://github.com/features/copilot
+https://codeium.com
+https://tabnine.com
+https://replit.com
+https://v0.dev
+
+# ============================================
+# AI 音频 & 音乐
+# ============================================
+https://elevenlabs.io
+https://suno.com
+https://udio.com
+https://murf.ai
+https://descript.com
+
+# ============================================
+# AI 搜索 & 研究
+# ============================================
+https://you.com
+https://phind.com
+https://consensus.app
+https://elicit.com
+https://scite.ai
+
+# ============================================
+# AI 设计 & 创意
+# ============================================
+https://canva.com
+https://figma.com
+https://adobe.com/sensei
+https://looka.com
+https://brandmark.io
+
+# ============================================
+# AI 效率工具
+# ============================================
+https://otter.ai
+https://fireflies.ai
+https://reclaim.ai
+https://motion.dev
+https://mem.ai
+
+# ============================================
+# 国产 AI 工具
+# ============================================
+https://tongyi.aliyun.com
+https://yiyan.baidu.com
+https://kimi.moonshot.cn
+https://doubao.com
+https://tiangong.cn
+https://flowus.cn
+https://copilot.tencent.com

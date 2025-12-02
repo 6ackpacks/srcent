@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Scent - 每日产品精选</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="theme_minimalist.css">
+
+    <style>
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Utility animation classes */
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s var(--ease-out) forwards;
+        }
+
+        .animate-delay-100 {
+            animation-delay: 100ms;
+        }
+
+        .animate-delay-200 {
+            animation-delay: 200ms;
+        }
+
+        .animate-delay-300 {
+            animation-delay: 300ms;
+        }
+
+        /* Initial hidden state */
+        .will-animate {
+            opacity: 0;
+        }
+
+        /* Button styles */
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            padding: 0.875rem 2.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all var(--duration-normal) var(--ease-out);
+            border: 1px solid var(--primary);
+            cursor: pointer;
+            font-size: 0.9375rem;
+        }
+
+        .btn-primary:hover {
+            background-color: oklch(0.15 0 0);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--foreground);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all var(--duration-normal) var(--ease-out);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.9375rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background-color: oklch(0.99 0 0);
+        }
+
+        .btn-secondary:hover .arrow-icon {
+            transform: translateX(3px);
+        }
+
+        .arrow-icon {
+            transition: transform var(--duration-normal) var(--ease-out);
+        }
+
+        /* Card styles */
+        .product-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            transition: all var(--duration-normal) var(--ease-out);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .featured-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all var(--duration-slow) var(--ease-out);
+            box-shadow: var(--shadow);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Input styles */
+        .input-field {
+            background-color: var(--input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.875rem 1.25rem;
+            font-size: 0.9375rem;
+            transition: all var(--duration-normal) var(--ease-out);
+            width: 100%;
+            font-family: var(--font-sans);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px oklch(0.20 0 0 / 0.1);
+            background-color: var(--background);
+        }
+
+        .input-field::placeholder {
+            color: var(--muted-foreground);
+        }
+
+        /* Tag styles */
+        .tag {
+            display: inline-block;
+            background-color: var(--muted);
+            color: var(--muted-foreground);
+            padding: 0.375rem 0.875rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+            font-family: var(--font-mono);
+            transition: all var(--duration-normal) var(--ease-out);
+            border: 1px solid var(--border);
+        }
+
+        .tag:hover {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        /* Link underline animation */
+        .animated-link {
+            position: relative;
+            text-decoration: none;
+            color: var(--foreground);
+        }
+
+        .animated-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width var(--duration-normal) var(--ease-out);
+        }
+
+        .animated-link:hover::after {
+            width: 100%;
+        }
+
+        /* Header scroll effect */
+        .header {
+            transition: all var(--duration-slow) var(--ease-out);
+            background-color: transparent;
+        }
+
+        .header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-sm);
+            height: 64px;
+        }
+
+        /* Logo styles */
+        .logo {
+            transition: all var(--duration-slow) var(--ease-out);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo:hover {
+            transform: rotate(-2deg) scale(1.02);
+        }
+
+        /* Minimal hero layout */
+        .minimal-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 90vh;
+            align-items: center;
+            gap: 6rem;
+        }
+
+        @media (max-width: 768px) {
+            .minimal-hero {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                min-height: auto;
+                padding: 4rem 0;
+            }
+        }
+
+        /* Logo placeholder box */
+        .logo-placeholder {
+            width: 100%;
+            height: 500px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-foreground);
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .logo-placeholder:hover {
+            border-color: var(--primary);
+        }
+
+        /* Product icon */
+        .product-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--muted);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .product-icon-large {
+            width: 64px;
+            height: 64px;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Analysis section */
+        .analysis-item {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+        }
+
+        .analysis-item:hover {
+            background: var(--muted);
+        }
+
+        .analysis-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header fixed top-0 left-0 right-0 z-50 h-20">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="ai_scent_home_4.html" class="logo">AI Scent 🔬</a>
+            <nav class="flex items-center gap-8">
+                <a href="directory.html" class="animated-link text-sm font-medium">发现</a>
+                <a href="archives.html" class="animated-link text-sm font-medium">往期</a>
+                <a href="#about" class="animated-link text-sm font-medium">关于</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section - Ultra Minimal -->
+    <section class="px-6" style="background: #f5f5f5;">
+        <div class="max-w-7xl mx-auto">
+            <div class="minimal-hero">
+                <!-- Left: Minimal Content -->
+                <div class="space-y-8">
+                    <div class="space-y-6">
+                        <h1 class="will-animate animate-fade-in-up text-6xl font-bold leading-tight" style="letter-spacing: -0.02em;">
+                            AI Scent<br>
+                            每日产品精选
+                        </h1>
+
+                        <p class="will-animate animate-fade-in-up animate-delay-100 text-xl text-gray-600" style="line-height: 1.6;">
+                            洞察 AI 产品的设计灵魂
+                        </p>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="will-animate animate-fade-in-up animate-delay-200 space-y-4 pt-2">
+                        <div class="flex gap-3 max-w-lg">
+                            <input
+                                type="email"
+                                class="input-field flex-1"
+                                placeholder="输入你的邮箱地址"
+                            />
+                            <button class="btn-primary whitespace-nowrap">
+                                订阅
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Logo Placeholder -->
+                <div class="will-animate animate-fade-in-up animate-delay-300">
+                    <div class="logo-placeholder">
+                        <p class="text-center">
+                            Logo 占位区<br>
+                            <span class="text-xs text-gray-400">500 × 500</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Today's Issue Header -->
+    <section class="py-8 px-6 border-t border-b border-gray-200 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-gray-600">📅 第 42 期 · 2025.11.27</span>
+                    <span class="text-gray-300">|</span>
+                    <span class="text-sm font-medium">🎯 本期主题：学术写作工具</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Product Analysis -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold">本期深度拆解</h2>
+            </div>
+
+            <div class="featured-card">
+                <div class="grid md:grid-cols-5 gap-0">
+                    <!-- Left: Logo -->
+                    <div class="md:col-span-1 p-8 flex items-center justify-center border-r border-gray-200 bg-gray-50">
+                        <div class="product-icon-large">
+                            <i data-lucide="pen-tool" style="width: 32px; height: 32px;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Right: Content -->
+                    <div class="md:col-span-4 p-8 space-y-6">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2">Grammarly for Students</h3>
+                            <p class="text-gray-600">AI 驱动的学术写作助手</p>
+                        </div>
+
+                        <!-- Analysis Points -->
+                        <div class="space-y-2">
+                            <div class="analysis-item">
+                                <i data-lucide="lightbulb" class="analysis-icon"></i>
+                                <div>
+                                    <p class="text-sm font-medium mb-1">设计灵魂</p>
+                                    <p class="text-sm text-gray-600">让写作成为思考的延伸，而非语法的束缚</p>
+                                </div>
+                            </div>
+
+                            <div class="analysis-item">
+                                <i data-lucide="users" class="analysis-icon"></i>
+                                <div>
+                                    <p class="text-sm font-medium mb-1">目标人群</p>
+                                    <p class="text-sm text-gray-600">学术写作者、非母语英文写作者</p>
+                                </div>
+                            </div>
+
+                            <div class="analysis-item">
+                                <i data-lucide="package" class="analysis-icon"></i>
+                                <div>
+                                    <p class="text-sm font-medium mb-1">核心功能</p>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <span class="tag">语法检查</span>
+                                        <span class="tag">风格建议</span>
+                                        <span class="tag">抄袭检测</span>
+                                        <span class="tag">引用管理</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex gap-4 pt-4">
+                            <a href="product_detail.html" class="btn-secondary">
+                                查看完整拆解
+                                <i data-lucide="arrow-right" class="arrow-icon" style="width: 16px; height: 16px;"></i>
+                            </a>
+                            <a href="#" class="btn-secondary">
+                                访问官网
+                                <i data-lucide="external-link" style="width: 16px; height: 16px;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- More Products -->
+    <section class="py-20 px-6 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold">本期更多推荐</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="product-icon">
+                            <i data-lucide="book-open" style="width: 24px; height: 24px; color: var(--muted-foreground);"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Notion AI</h3>
+                            <p class="text-sm text-gray-600">知识管理助手</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="tag">#笔记</span>
+                        <span class="tag">#协作</span>
+                    </div>
+                    <a href="product_detail.html" class="btn-secondary w-full justify-center">
+                        查看拆解
+                        <i data-lucide="arrow-right" class="arrow-icon" style="width: 16px; height: 16px;"></i>
+                    </a>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="product-icon">
+                            <i data-lucide="file-text" style="width: 24px; height: 24px; color: var(--muted-foreground);"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">ChatPDF</h3>
+                            <p class="text-sm text-gray-600">对话式阅读</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="tag">#文献</span>
+                        <span class="tag">#阅读</span>
+                    </div>
+                    <a href="product_detail.html" class="btn-secondary w-full justify-center">
+                        查看拆解
+                        <i data-lucide="arrow-right" class="arrow-icon" style="width: 16px; height: 16px;"></i>
+                    </a>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="product-icon">
+                            <i data-lucide="graduation-cap" style="width: 24px; height: 24px; color: var(--muted-foreground);"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-1">Scite.ai</h3>
+                            <p class="text-sm text-gray-600">引用分析</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="tag">#学术</span>
+                        <span class="tag">#研究</span>
+                    </div>
+                    <a href="product_detail.html" class="btn-secondary w-full justify-center">
+                        查看拆解
+                        <i data-lucide="arrow-right" class="arrow-icon" style="width: 16px; height: 16px;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Archive Section -->
+    <section id="archive" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold">往期回顾</h2>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-6 text-sm">
+                <a href="#" class="animated-link text-gray-700 hover:text-black">第 41 期：视频创作</a>
+                <span class="text-gray-300">|</span>
+                <a href="#" class="animated-link text-gray-700 hover:text-black">第 40 期：代码助手</a>
+                <span class="text-gray-300">|</span>
+                <a href="archives.html" class="animated-link font-medium">查看全部 →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="text-sm text-gray-600">
+                    AI Scent © 2025
+                </div>
+                <div class="flex gap-6 text-sm">
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">关于</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">联系</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">隐私</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Header scroll effect
+        const header = document.querySelector('.header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Trigger animations on page load
+        window.addEventListener('load', () => {
+            const elements = document.querySelectorAll('.will-animate');
+            elements.forEach(el => {
+                el.style.opacity = '0';
+                setTimeout(() => {
+                    el.classList.remove('will-animate');
+                }, 50);
+            });
+        });
+
+        // Email subscription
+        const emailInput = document.querySelector('input[type="email"]');
+        const subscribeBtn = document.querySelector('.btn-primary');
+
+        subscribeBtn?.addEventListener('click', () => {
+            const email = emailInput?.value;
+            if (email && email.includes('@')) {
+                subscribeBtn.innerHTML = '✓ 订阅成功';
+                setTimeout(() => {
+                    subscribeBtn.innerHTML = '订阅';
+                    emailInput.value = '';
+                }, 2000);
+            } else {
+                alert('请输入有效的邮箱地址');
+            }
+        });
+    </script>
+</body>
+</html>

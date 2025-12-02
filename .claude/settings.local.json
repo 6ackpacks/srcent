@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill /PID 59780 /F)",
+      "Bash(cmd /c \"taskkill /PID 59780 /F\")",
+      "Bash(claude mcp add firecrawl -e FIRECRAWL_API_KEY=your-api-key -- npx -y firecrawl-mcp)",
+      "Bash(claude mcp add firecrawl -e FIRECRAWL_API_KEY=fc-16ec2b51855b4968a68670b6df43bd4d -- npx -y firecrawl-mcp)",
+      "Bash(claude mcp remove firecrawl)",
+      "Bash(npm run ingest:install)",
+      "Bash(npm run ingest)",
+      "Bash(npm install playwright)",
+      "Bash(npx playwright install chromium)",
+      "WebFetch(domain:moge.ai)",
+      "WebSearch",
+      "Bash(del \"C:\\Users\\li\\Desktop\\shad-cn\\pending.json\")",
+      "Bash(npm install @supabase/supabase-js)",
+      "Bash(git init)",
+      "Bash(git add .)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: AI Scent platform\n\n- Next.js App Router with product discovery pages\n- AI-powered product analysis system\n- Data ingestion pipeline (Firecrawl/Playwright + LLM)\n- Supabase database integration\n- Tailwind CSS styling\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

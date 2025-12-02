@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品库 - AI Scent</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="theme_minimalist.css">
+
+    <style>
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            transition: all var(--duration-normal) var(--ease-out);
+            border: 1px solid var(--primary);
+            cursor: pointer;
+            font-size: 0.9375rem;
+        }
+
+        .btn-primary:hover {
+            background-color: oklch(0.15 0 0);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .product-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: all var(--duration-normal) var(--ease-out);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .filter-btn {
+            background-color: transparent;
+            color: var(--foreground);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            transition: all var(--duration-normal) var(--ease-out);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border-color: var(--primary);
+        }
+
+        .search-input {
+            background-color: var(--input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            font-size: 0.9375rem;
+            transition: all var(--duration-normal) var(--ease-out);
+            width: 100%;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px oklch(0.20 0 0 / 0.1);
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--muted);
+            color: var(--muted-foreground);
+            padding: 0.25rem 0.625rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border);
+        }
+
+        .animated-link {
+            position: relative;
+            text-decoration: none;
+            color: var(--foreground);
+        }
+
+        .animated-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width var(--duration-normal) var(--ease-out);
+        }
+
+        .animated-link:hover::after {
+            width: 100%;
+        }
+
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .product-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--muted);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header fixed top-0 left-0 right-0 z-50 h-20">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="ai_scent_home_4.html" class="logo">AI Scent 🔬</a>
+            <nav class="flex items-center gap-8">
+                <a href="directory.html" class="text-sm font-semibold">发现</a>
+                <a href="archives.html" class="animated-link text-sm font-medium">往期</a>
+                <a href="#about" class="animated-link text-sm font-medium">关于</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="pt-28 pb-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-12">
+                <h1 class="text-4xl font-bold mb-3">产品库</h1>
+                <p class="text-gray-600">探索已拆解的 AI 产品</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mb-8 max-w-2xl">
+                <div class="relative">
+                    <i data-lucide="search" style="position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted-foreground);"></i>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="搜索产品名称、功能、分类..."
+                    />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8">
+                <!-- Sidebar Filters -->
+                <aside class="col-span-3">
+                    <div class="sticky top-28 space-y-6">
+                        <!-- Category Filter -->
+                        <div>
+                            <h3 class="text-sm font-semibold mb-3">分类</h3>
+                            <div class="space-y-2">
+                                <button class="filter-btn active">全部</button>
+                                <button class="filter-btn">文本生成</button>
+                                <button class="filter-btn">图像生成</button>
+                                <button class="filter-btn">视频创作</button>
+                                <button class="filter-btn">代码辅助</button>
+                                <button class="filter-btn">学术研究</button>
+                                <button class="filter-btn">知识管理</button>
+                            </div>
+                        </div>
+
+                        <!-- Scene Filter -->
+                        <div>
+                            <h3 class="text-sm font-semibold mb-3">应用场景</h3>
+                            <div class="space-y-2">
+                                <button class="filter-btn">写作业</button>
+                                <button class="filter-btn">做设计</button>
+                                <button class="filter-btn">写代码</button>
+                                <button class="filter-btn">读论文</button>
+                                <button class="filter-btn">做笔记</button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Product Grid -->
+                <main class="col-span-9">
+                    <div class="mb-4 flex items-center justify-between">
+                        <p class="text-sm text-gray-600">共 42 个产品</p>
+                        <select class="text-sm border border-gray-300 rounded px-3 py-1.5">
+                            <option>最新拆解</option>
+                            <option>热门产品</option>
+                            <option>按分类</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-6">
+                        <!-- Product Card 1 -->
+                        <a href="product_detail.html" class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="pen-tool" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">Grammarly</h3>
+                                    <p class="text-sm text-gray-600 mb-3">AI 驱动的学术写作助手</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#写作</span>
+                                        <span class="tag">#学术</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Product Card 2 -->
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="book-open" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">Notion AI</h3>
+                                    <p class="text-sm text-gray-600 mb-3">知识管理的 AI 助手</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#笔记</span>
+                                        <span class="tag">#协作</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Card 3 -->
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="file-text" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">ChatPDF</h3>
+                                    <p class="text-sm text-gray-600 mb-3">对话式 PDF 阅读</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#文献</span>
+                                        <span class="tag">#阅读</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Card 4 -->
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="graduation-cap" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">Scite.ai</h3>
+                                    <p class="text-sm text-gray-600 mb-3">智能引用分析工具</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#学术</span>
+                                        <span class="tag">#研究</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Card 5 -->
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="code" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">Cursor</h3>
+                                    <p class="text-sm text-gray-600 mb-3">AI 代码编辑器</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#代码</span>
+                                        <span class="tag">#编程</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Card 6 -->
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="image" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">Midjourney</h3>
+                                    <p class="text-sm text-gray-600 mb-3">AI 图像生成工具</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#设计</span>
+                                        <span class="tag">#创作</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- More cards... -->
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="video" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">Runway</h3>
+                                    <p class="text-sm text-gray-600 mb-3">AI 视频生成平台</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#视频</span>
+                                        <span class="tag">#创作</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="mic" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">ElevenLabs</h3>
+                                    <p class="text-sm text-gray-600 mb-3">AI 语音合成工具</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#语音</span>
+                                        <span class="tag">#音频</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-card">
+                            <div class="flex flex-col gap-4">
+                                <div class="product-icon">
+                                    <i data-lucide="sparkles" style="width: 28px; height: 28px; color: var(--muted-foreground);"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-lg mb-1">Jasper</h3>
+                                    <p class="text-sm text-gray-600 mb-3">AI 内容创作助手</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span class="tag">#文案</span>
+                                        <span class="tag">#营销</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-12 flex items-center justify-center gap-2">
+                        <button class="px-3 py-1.5 border border-gray-300 rounded text-sm hover:bg-gray-50">上一页</button>
+                        <button class="px-3 py-1.5 bg-black text-white rounded text-sm">1</button>
+                        <button class="px-3 py-1.5 border border-gray-300 rounded text-sm hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1.5 border border-gray-300 rounded text-sm hover:bg-gray-50">3</button>
+                        <button class="px-3 py-1.5 border border-gray-300 rounded text-sm hover:bg-gray-50">下一页</button>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="text-sm text-gray-600">
+                    AI Scent © 2025
+                </div>
+                <div class="flex gap-6 text-sm">
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">关于</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">联系</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">隐私</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from siblings
+                this.parentElement.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                // Add active class to clicked button
+                this.classList.add('active');
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput?.addEventListener('input', function() {
+            console.log('Searching for:', this.value);
+            // TODO: Implement actual search logic
+        });
+    </script>
+</body>
+</html>

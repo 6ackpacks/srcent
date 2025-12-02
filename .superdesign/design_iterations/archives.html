@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>往期归档 - AI Scent</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="theme_minimalist.css">
+
+    <style>
+        .animated-link {
+            position: relative;
+            text-decoration: none;
+            color: var(--foreground);
+        }
+
+        .animated-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: currentColor;
+            transition: width var(--duration-normal) var(--ease-out);
+        }
+
+        .animated-link:hover::after {
+            width: 100%;
+        }
+
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .issue-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            transition: all var(--duration-normal) var(--ease-out);
+            cursor: pointer;
+        }
+
+        .issue-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--muted);
+            color: var(--muted-foreground);
+            padding: 0.25rem 0.625rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            border: 1px solid var(--border);
+        }
+
+        .product-mini {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--muted);
+            padding: 0.375rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-icon-mini {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -6px;
+            top: 2rem;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 1px var(--border);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .filter-tab {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 2px solid transparent;
+            font-size: 0.9375rem;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab:hover {
+            color: var(--foreground);
+        }
+
+        .filter-tab.active {
+            color: var(--foreground);
+            border-bottom-color: var(--primary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header fixed top-0 left-0 right-0 z-50 h-20">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="ai_scent_home_4.html" class="logo">AI Scent 🔬</a>
+            <nav class="flex items-center gap-8">
+                <a href="directory.html" class="animated-link text-sm font-medium">发现</a>
+                <a href="archives.html" class="text-sm font-semibold">往期</a>
+                <a href="#about" class="animated-link text-sm font-medium">关于</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="pt-28 pb-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Page Header -->
+            <div class="mb-12">
+                <h1 class="text-4xl font-bold mb-3">往期归档</h1>
+                <p class="text-gray-600">探索已发布的 42 期产品拆解报告</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <div class="filter-tab active">全部</div>
+                <div class="filter-tab">文本工具</div>
+                <div class="filter-tab">图像创作</div>
+                <div class="filter-tab">视频生成</div>
+                <div class="filter-tab">代码助手</div>
+                <div class="filter-tab">学术研究</div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="space-y-6">
+                <!-- Issue 42 -->
+                <div class="relative pl-8 border-l-2 border-gray-200">
+                    <div class="timeline-dot"></div>
+                    <div class="issue-card">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2 font-mono">第 42 期 · 2025.11.27</div>
+                                <h2 class="text-2xl font-semibold mb-2">学术写作工具专场</h2>
+                                <p class="text-gray-600">深度拆解 Grammarly、Notion AI、ChatPDF 等学术写作辅助工具</p>
+                            </div>
+                            <span class="tag">最新</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold mb-2 text-gray-700">本期产品：</h3>
+                            <div class="flex flex-wrap">
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="pen-tool" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Grammarly</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="book-open" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Notion AI</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="file-text" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>ChatPDF</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="graduation-cap" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Scite.ai</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+                                    4 个产品
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                                    约 30 分钟
+                                </span>
+                            </div>
+                            <a href="ai_scent_home_4.html" class="text-sm font-medium hover:underline">
+                                查看详情 →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue 41 -->
+                <div class="relative pl-8 border-l-2 border-gray-200">
+                    <div class="timeline-dot"></div>
+                    <div class="issue-card">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2 font-mono">第 41 期 · 2025.11.26</div>
+                                <h2 class="text-2xl font-semibold mb-2">视频创作工具集锦</h2>
+                                <p class="text-gray-600">解析 Runway、Pika、CapCut 等 AI 视频生成工具的设计逻辑</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold mb-2 text-gray-700">本期产品：</h3>
+                            <div class="flex flex-wrap">
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="video" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Runway</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="film" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Pika</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="scissors" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>CapCut</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="wand-2" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Descript</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="clapperboard" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Synthesia</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+                                    5 个产品
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                                    约 40 分钟
+                                </span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:underline">
+                                查看详情 →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue 40 -->
+                <div class="relative pl-8 border-l-2 border-gray-200">
+                    <div class="timeline-dot"></div>
+                    <div class="issue-card">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2 font-mono">第 40 期 · 2025.11.25</div>
+                                <h2 class="text-2xl font-semibold mb-2">代码辅助神器大盘点</h2>
+                                <p class="text-gray-600">深入剖析 Cursor、GitHub Copilot、v0 等 AI 编程工具</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold mb-2 text-gray-700">本期产品：</h3>
+                            <div class="flex flex-wrap">
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="code" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Cursor</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="github" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>GitHub Copilot</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="layout" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>v0.dev</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="terminal" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Tabnine</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+                                    4 个产品
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                                    约 35 分钟
+                                </span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:underline">
+                                查看详情 →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue 39 -->
+                <div class="relative pl-8 border-l-2 border-gray-200">
+                    <div class="timeline-dot"></div>
+                    <div class="issue-card">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2 font-mono">第 39 期 · 2025.11.24</div>
+                                <h2 class="text-2xl font-semibold mb-2">设计 AI 工具专场</h2>
+                                <p class="text-gray-600">探索 Midjourney、Leonardo、Stable Diffusion 等图像生成工具</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold mb-2 text-gray-700">本期产品：</h3>
+                            <div class="flex flex-wrap">
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="image" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Midjourney</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="palette" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Leonardo AI</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="sparkles" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>DALL-E 3</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="paintbrush" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Stable Diffusion</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="wand" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Firefly</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="crop" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Canva AI</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+                                    6 个产品
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                                    约 45 分钟
+                                </span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:underline">
+                                查看详情 →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue 38 -->
+                <div class="relative pl-8 border-l-2 border-gray-200">
+                    <div class="timeline-dot"></div>
+                    <div class="issue-card">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <div class="text-sm text-gray-500 mb-2 font-mono">第 38 期 · 2025.11.23</div>
+                                <h2 class="text-2xl font-semibold mb-2">AI 对话助手大比拼</h2>
+                                <p class="text-gray-600">对比分析 ChatGPT、Claude、Gemini 等对话型 AI 产品</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="text-sm font-semibold mb-2 text-gray-700">本期产品：</h3>
+                            <div class="flex flex-wrap">
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="message-circle" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>ChatGPT</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="bot" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Claude</span>
+                                </div>
+                                <div class="product-mini">
+                                    <div class="product-icon-mini">
+                                        <i data-lucide="sparkles" style="width: 12px; height: 12px; color: var(--muted-foreground);"></i>
+                                    </div>
+                                    <span>Gemini</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+                                    3 个产品
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                                    约 25 分钟
+                                </span>
+                            </div>
+                            <a href="#" class="text-sm font-medium hover:underline">
+                                查看详情 →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More issues placeholder -->
+                <div class="text-center py-8">
+                    <p class="text-gray-500 mb-4">还有 37 期内容...</p>
+                    <button class="px-6 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+                        加载更多
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="text-sm text-gray-600">
+                    AI Scent © 2025
+                </div>
+                <div class="flex gap-6 text-sm">
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">关于</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">联系</a>
+                    <a href="#" class="animated-link text-gray-600 hover:text-black">隐私</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Tab filtering
+        const tabs = document.querySelectorAll('.filter-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                // TODO: Implement actual filtering logic
+            });
+        });
+    </script>
+</body>
+</html>
