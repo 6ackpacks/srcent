@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "ingest": "cd scripts && npm run ingest",
-    "ingest:install": "cd scripts && npm install"
+    "ingest:install": "cd scripts && npm install",
+    "ingest:deep": "cd scripts && npm run ingest:deep"
   },
   "keywords": [],
   "author": "",

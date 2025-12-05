@@ -1,6 +1,6 @@
 // 数据库操作模块
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import type { Product, Review } from './types.js';
+import type { Product, Review, SourceArticle } from './types.js';
 
 let supabase: SupabaseClient;
 
@@ -96,4 +96,59 @@ export async function uploadScreenshot(
     .getPublicUrl(fileName);
 
   return data.publicUrl;
+}
+
+// ============================================
+// 深度拆解相关操作
+// ============================================
+
+export async function insertSourceArticle(article: Omit<SourceArticle, 'id' | 'created_at'>): Promise<SourceArticle> {
+  const { data, error } = await supabase
+    .from('source_articles')
+    .insert(article)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to insert source article: ${error.message}`);
+  }
+
+  return data;
+}
+
+export async function getSourceArticlesByProductId(productId: string): Promise<SourceArticle[]> {
+  const { data, error } = await supabase
+    .from('source_articles')
+    .select('*')
+    .eq('product_id', productId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to get source articles: ${error.message}`);
+  }
+
+  return data || [];
+}
+
+export async function updateProductDeepDive(
+  slug: string,
+  updates: {
+    podcast_audio_url?: string;
+    podcast_transcript?: string;
+    podcast_duration?: number;
+    has_deep_dive?: boolean;
+  }
+): Promise<Product> {
+  const { data, error } = await supabase
+    .from('products')
+    .update(updates)
+    .eq('slug', slug)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to update product deep dive: ${error.message}`);
+  }
+
+  return data;
 }

@@ -3,7 +3,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { Search, ArrowUpRight, Loader2 } from "lucide-react";
+import { Search, ArrowUpRight, Loader2, Headphones } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getProducts, getCategories, type Product } from "@/lib/supabase";
 
@@ -136,8 +136,33 @@ export default function DirectoryPage() {
               </div>
 
               {loading ? (
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="w-8 h-8 animate-spin text-[var(--muted-foreground)]" />
+                <div className="grid grid-cols-3 gap-4">
+                  {/* 骨架屏 */}
+                  {[...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5"
+                    >
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-start justify-between">
+                          <div className="w-12 h-12 rounded-xl skeleton-shimmer" />
+                        </div>
+                        <div>
+                          <div className="h-5 w-24 rounded skeleton-shimmer mb-2" />
+                          <div className="h-4 w-full rounded skeleton-shimmer mb-1" />
+                          <div className="h-4 w-3/4 rounded skeleton-shimmer mb-3" />
+                          <div className="flex gap-2 mb-3">
+                            <div className="h-5 w-14 rounded skeleton-shimmer" />
+                            <div className="h-5 w-16 rounded skeleton-shimmer" />
+                          </div>
+                          <div className="flex justify-between">
+                            <div className="h-5 w-16 rounded skeleton-shimmer" />
+                            <div className="h-5 w-12 rounded skeleton-shimmer" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : filteredProducts.length === 0 ? (
                 <div className="text-center py-20">
@@ -146,72 +171,85 @@ export default function DirectoryPage() {
               ) : (
                 <div className="grid grid-cols-3 gap-4">
                   {filteredProducts.map((product) => (
-                    <Link
+                    <div
                       key={product.id}
-                      href={`/product/${product.slug}`}
-                      className="group bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--primary)] transition-all card-hover"
+                      className="group bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 hover:border-[var(--primary)] transition-all card-hover relative"
                     >
-                      <div className="flex flex-col gap-4">
-                        {/* Product Icon */}
-                        <div className="flex items-start justify-between">
-                          <div className="w-12 h-12 rounded-xl bg-[var(--secondary)] flex items-center justify-center border border-[var(--border)] overflow-hidden">
-                            {product.logo_url ? (
-                              <img
-                                src={product.logo_url}
-                                alt={product.name}
-                                className="w-7 h-7 object-contain"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none';
-                                  if (e.currentTarget.nextElementSibling) {
-                                    (e.currentTarget.nextElementSibling as HTMLElement).classList.remove('hidden');
-                                  }
-                                }}
-                              />
-                            ) : null}
-                            <span className={`text-2xl ${product.logo_url ? 'hidden' : ''}`}>
-                              {categoryLabels[product.category || ""]?.icon || "🤖"}
-                            </span>
-                          </div>
-                          <ArrowUpRight className="w-4 h-4 text-[var(--muted-foreground)] opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </div>
+                      {/* 深度拆解标签 */}
+                      {product.has_deep_dive && (
+                        <Link
+                          href={`/product/${product.slug}/deep-dive`}
+                          className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-xs font-medium hover:opacity-90 transition-opacity"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Headphones className="w-3 h-3" />
+                          深度拆解
+                        </Link>
+                      )}
 
-                        {/* Product Info */}
-                        <div>
-                          <h3 className="font-semibold text-base mb-1 group-hover:text-[var(--primary)] transition-colors">
-                            {product.name}
-                          </h3>
-                          <p className="text-sm text-[var(--muted-foreground)] mb-3 line-clamp-2">
-                            {product.tagline || "AI 产品"}
-                          </p>
-
-                          {/* Tags */}
-                          {product.tags && product.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5 mb-3">
-                              {product.tags.slice(0, 2).map((tag, j) => (
-                                <span
-                                  key={j}
-                                  className="px-2 py-0.5 bg-[var(--secondary)] text-[var(--muted-foreground)] rounded text-xs border border-[var(--border)]"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Category & Status */}
-                          <div className="flex items-center justify-between text-xs text-[var(--muted-foreground)]">
-                            <span className="px-2 py-0.5 bg-[var(--secondary)] rounded">
-                              {categoryLabels[product.category || ""]?.label || product.category || "未分类"}
-                            </span>
-                            {product.ai_analysis?.pricing_model && (
-                              <span className="px-2 py-0.5 bg-[var(--primary)]/10 text-[var(--primary)] rounded">
-                                {product.ai_analysis.pricing_model}
+                      <Link href={`/product/${product.slug}`} className="block">
+                        <div className="flex flex-col gap-4">
+                          {/* Product Icon */}
+                          <div className="flex items-start justify-between">
+                            <div className="w-12 h-12 rounded-xl bg-[var(--secondary)] flex items-center justify-center border border-[var(--border)] overflow-hidden">
+                              {product.logo_url ? (
+                                <img
+                                  src={product.logo_url}
+                                  alt={product.name}
+                                  className="w-7 h-7 object-contain"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    if (e.currentTarget.nextElementSibling) {
+                                      (e.currentTarget.nextElementSibling as HTMLElement).classList.remove('hidden');
+                                    }
+                                  }}
+                                />
+                              ) : null}
+                              <span className={`text-2xl ${product.logo_url ? 'hidden' : ''}`}>
+                                {categoryLabels[product.category || ""]?.icon || "🤖"}
                               </span>
+                            </div>
+                            <ArrowUpRight className={`w-4 h-4 text-[var(--muted-foreground)] opacity-0 group-hover:opacity-100 transition-opacity ${product.has_deep_dive ? 'mt-6' : ''}`} />
+                          </div>
+
+                          {/* Product Info */}
+                          <div>
+                            <h3 className="font-semibold text-base mb-1 group-hover:text-[var(--primary)] transition-colors">
+                              {product.name}
+                            </h3>
+                            <p className="text-sm text-[var(--muted-foreground)] mb-3 line-clamp-2">
+                              {product.tagline || "AI 产品"}
+                            </p>
+
+                            {/* Tags */}
+                            {product.tags && product.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mb-3">
+                                {product.tags.slice(0, 2).map((tag, j) => (
+                                  <span
+                                    key={j}
+                                    className="px-2 py-0.5 bg-[var(--secondary)] text-[var(--muted-foreground)] rounded text-xs border border-[var(--border)]"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
                             )}
+
+                            {/* Category & Status */}
+                            <div className="flex items-center justify-between text-xs text-[var(--muted-foreground)]">
+                              <span className="px-2 py-0.5 bg-[var(--secondary)] rounded">
+                                {categoryLabels[product.category || ""]?.label || product.category || "未分类"}
+                              </span>
+                              {product.ai_analysis?.pricing_model && (
+                                <span className="px-2 py-0.5 bg-[var(--primary)]/10 text-[var(--primary)] rounded">
+                                  {product.ai_analysis.pricing_model}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Link>
+                      </Link>
+                    </div>
                   ))}
                 </div>
               )}

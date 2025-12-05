@@ -15,6 +15,11 @@ export interface Product {
   status: 'draft' | 'published' | 'archived';
   created_at?: string;
   updated_at?: string;
+  // 播客深度拆解字段
+  podcast_audio_url?: string | null;
+  podcast_transcript?: string | null;
+  podcast_duration?: number | null;
+  has_deep_dive?: boolean;
 }
 
 // 功能模块
@@ -101,6 +106,26 @@ export interface CrawlResult {
 
 export interface IngestConfig {
   url: string;
+  category?: string;
+  tags?: string[];
+}
+
+// 来源文章
+export interface SourceArticle {
+  id?: string;
+  product_id: string;
+  url: string;
+  title?: string;
+  source_name?: string;
+  key_insight?: string;
+  created_at?: string;
+}
+
+// 深度拆解任务配置
+export interface DeepDiveTask {
+  product_slug: string;      // 产品的 slug (用于关联)
+  product_url: string;       // 产品官网 URL
+  source_urls: string[];     // 3-5 篇参考文章 URL
   category?: string;
   tags?: string[];
 }

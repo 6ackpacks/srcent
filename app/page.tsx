@@ -3,43 +3,38 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { ArrowRight, ExternalLink, Lightbulb, Users, Package, Sparkles, Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getProducts, type Product } from "@/lib/supabase";
-
-// 分类图标映射
-const categoryIcons: Record<string, string> = {
-  "文本": "✍️",
-  "图像": "🎨",
-  "视频": "🎬",
-  "代码": "💻",
-  "音频": "🎵",
-  "效率": "⚡",
-  "设计": "🖼️",
-  "搜索": "🔍",
-  "对话": "💬",
-};
+import {
+  ArrowRight,
+  Check,
+  Headphones,
+  Brain,
+  Target,
+} from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { getProducts, getDeepDiveProducts, type Product } from "@/lib/supabase";
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [deepDiveProducts, setDeepDiveProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     setIsLoaded(true);
-    loadProducts();
+    loadData();
   }, []);
 
-  async function loadProducts() {
+  async function loadData() {
     try {
-      const data = await getProducts();
-      setProducts(data);
+      const [allProducts, ddProducts] = await Promise.all([
+        getProducts(),
+        getDeepDiveProducts(),
+      ]);
+      setProducts(allProducts);
+      setDeepDiveProducts(ddProducts);
     } catch (error) {
-      console.error("Failed to load products:", error);
-    } finally {
-      setLoading(false);
+      console.error("Failed to load data:", error);
     }
   }
 
@@ -50,102 +45,265 @@ export default function Home() {
         setIsSubscribed(false);
         setEmail("");
       }, 2000);
-    } else {
-      alert("请输入有效的邮箱地址");
     }
   };
 
-  // 获取第一个产品作为主推
-  const featuredProduct = products[0];
-  // 获取接下来的 3 个产品作为推荐
-  const recommendedProducts = products.slice(1, 4);
+  const scrollToFeatures = () => {
+    document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <>
       <Header />
 
-      {/* Hero Section */}
-      <section className="px-6 bg-[var(--secondary)]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-16 items-center min-h-[90vh] py-32 md:py-0">
+      {/* Hero Section - Full Height */}
+      <section className="relative flex h-[calc(100vh-80px)] w-full items-center justify-center px-6">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-2">
             {/* Left: Content */}
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <div
-                  className={`inline-flex items-center gap-2 px-4 py-2 bg-[var(--primary)]/10 text-[var(--primary)] rounded-full text-sm font-medium transition-all duration-500 ${
-                    isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                  }`}
-                >
-                  <Sparkles className="w-4 h-4" />
-                  发现最适合你的 AI 工具
-                </div>
-
-                <h1
-                  className={`text-5xl md:text-6xl font-bold leading-tight transition-all duration-500 delay-100 ${
-                    isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                  }`}
-                >
-                  srcent
-                  <br />
-                  <span className="text-[var(--primary)]">AI 产品</span>发现平台
-                </h1>
-
-                <p
-                  className={`text-xl text-[var(--muted-foreground)] transition-all duration-500 delay-200 ${
-                    isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                  }`}
-                >
-                  洞察 AI 产品的设计灵魂，每日精选优质工具
-                </p>
-              </div>
-
-              {/* CTA */}
-              <div
-                className={`space-y-4 pt-2 transition-all duration-500 delay-300 ${
-                  isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+            <div className="ml-0 md:ml-10 flex flex-col gap-4">
+              <h1
+                className={`font-normal max-w-lg text-left text-5xl tracking-tighter md:text-7xl transition-all duration-700 ${
+                  isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                 }`}
               >
-                <div className="flex gap-3 max-w-lg">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                    className="flex-1 bg-[var(--card)] border border-[var(--border)] rounded-lg px-5 py-3.5 text-sm focus:outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all placeholder:text-[var(--muted-foreground)]"
-                    placeholder="输入你的邮箱地址"
-                  />
-                  <button
-                    onClick={handleSubscribe}
-                    className="bg-[var(--primary)] text-[var(--primary-foreground)] px-8 py-3.5 rounded-lg font-medium text-sm hover:opacity-90 transition-all hover:-translate-y-0.5 hover:shadow-md whitespace-nowrap active:scale-95"
-                  >
-                    {isSubscribed ? "✓ 订阅成功" : "订阅日报"}
-                  </button>
-                </div>
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  已收录 {products.length} 个 AI 产品，每周精选深度拆解
-                </p>
+                srcent
+              </h1>
+
+              <div
+                className={`font-light text-lg md:text-2xl transition-all duration-700 delay-100 ${
+                  isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}
+              >
+                <b className="font-semibold text-orange-500 text-xl md:text-3xl">
+                  AI 产品发现平台
+                </b>{" "}
+                / 洞察设计灵魂，解读产品价值
+              </div>
+
+              <div
+                className={`flex flex-row items-center gap-4 pt-4 transition-all duration-700 delay-200 ${
+                  isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}
+              >
+                <Link
+                  href="/directory"
+                  className="inline-flex items-center justify-center h-11 px-8 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-sm font-medium hover:bg-[var(--primary)]/90 transition-all duration-300"
+                >
+                  探索产品
+                </Link>
+                <button
+                  onClick={scrollToFeatures}
+                  className="inline-flex items-center justify-center h-11 px-8 border border-[var(--border)] bg-[var(--background)] rounded-full text-sm font-medium hover:bg-[var(--secondary)] transition-all duration-300 select-none"
+                >
+                  了解更多
+                </button>
               </div>
             </div>
 
             {/* Right: Visual */}
             <div
-              className={`transition-all duration-500 delay-400 ${
-                isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              className={`flex items-center justify-center transition-all duration-700 delay-300 ${
+                isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}
             >
-              <div className="relative">
-                <div className="w-full aspect-square bg-[var(--card)] border border-[var(--border)] rounded-2xl flex items-center justify-center overflow-hidden">
-                  <div className="text-center space-y-4">
-                    <span className="text-8xl">🔬</span>
-                    <p className="text-[var(--muted-foreground)]">AI 产品实验室</p>
-                  </div>
+              <div className="relative w-full max-w-xl lg:max-w-2xl">
+                {/* Main visual */}
+                <div className="w-full rounded-3xl flex items-center justify-center overflow-hidden">
+                  <img
+                    src="/pic.png"
+                    alt="AI 产品实验室"
+                    className="w-full h-auto object-contain"
+                  />
                 </div>
-                {/* Floating cards */}
-                <div className="absolute -top-4 -right-4 bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-lg">
-                  <span className="text-2xl">🤖</span>
+              </div>
+            </div>
+
+            {/* Scroll Indicator - memene style */}
+            <div
+              className={`w-fit absolute inset-x-0 bottom-8 mx-auto transition-all duration-700 delay-500 ${
+                isLoaded ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <button
+                onClick={scrollToFeatures}
+                className="group relative grid justify-center rounded-full border-2 border-orange-500/50 pt-2 h-12 w-8 hover:border-orange-500 transition-colors duration-300"
+              >
+                <div className="animate-scroll-bounce rounded-full bg-orange-500/70 h-3 w-1" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Email Subscription Section */}
+      <section className="my-20 flex items-center justify-center px-4 py-16">
+        <div className="mx-auto w-full max-w-xl text-center">
+          <h2 className="mb-6 text-3xl font-bold">订阅 AI 产品日报</h2>
+          <p className="mb-8 text-[var(--muted-foreground)]">
+            每周精选优质 AI 产品，深度解析设计理念与使用场景
+          </p>
+          <div className="mx-auto flex max-w-md items-center gap-2">
+            <div className="relative flex-1">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+                className="flex h-11 w-full border border-[var(--border)] bg-transparent px-4 py-1 text-sm transition-colors focus:outline-none focus:ring-0 focus:border-orange-500 rounded-full"
+                placeholder="输入邮箱地址"
+              />
+              <button
+                onClick={handleSubscribe}
+                className="absolute -right-1 top-1/2 -translate-y-1/2 h-11 px-6 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-sm font-medium hover:bg-[var(--primary)]/90 transition-all"
+              >
+                {isSubscribed ? "已订阅" : "立即订阅"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section - memene style */}
+      <section id="features" className="max-w-6xl mx-auto space-y-20 px-6 pt-20">
+        {/* Feature 1: AI Analysis */}
+        <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
+          <div className="flex flex-col gap-10 lg:order-1">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
+                  AI 智能分析
+                </h2>
+                <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
+                  基于大语言模型，深度解析每个 AI 产品的设计理念、核心功能与目标用户
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 items-start gap-6 lg:pl-6">
+              <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">设计理念洞察</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    挖掘产品背后的设计哲学，理解创始团队的愿景与思考
+                  </p>
                 </div>
-                <div className="absolute -bottom-4 -left-4 bg-[var(--card)] border border-[var(--border)] rounded-xl p-3 shadow-lg">
-                  <span className="text-2xl">✨</span>
+              </div>
+              <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">功能深度拆解</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    逐一分析核心功能，对比竞品优劣势，给出客观评价
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center lg:order-2">
+            <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <Brain className="w-24 h-24 mx-auto text-orange-500" />
+                  <p className="text-[var(--muted-foreground)] text-lg">AI 驱动分析</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature 2: Podcast Deep Dive */}
+        <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
+          <div className="flex flex-col gap-10 lg:order-2">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
+                  播客深度拆解
+                </h2>
+                <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
+                  将多篇行业文章精华提炼，生成双人对话播客，边听边学
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 items-start gap-6 lg:pl-6">
+              <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">多源信息整合</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    聚合行业文章、媒体报道、用户评价，多角度呈现产品全貌
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">AI 语音播客</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    双人对话形式，轻松愉快地了解产品精髓，适合通勤收听
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center lg:order-1">
+            <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <Headphones className="w-24 h-24 mx-auto text-orange-500" />
+                  <p className="text-[var(--muted-foreground)] text-lg">播客拆解</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature 3: Smart Discovery */}
+        <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
+          <div className="flex flex-col gap-10 lg:order-1">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
+                  智能发现推荐
+                </h2>
+                <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
+                  根据你的兴趣和使用场景，精准推荐最适合的 AI 工具
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 items-start gap-6 lg:pl-6">
+              <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">分类导航</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    文本、图像、视频、代码... 按需求快速找到目标产品
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium">替代方案对比</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    每个产品都有替代方案推荐，帮你做出最佳选择
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center lg:order-2">
+            <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="text-center space-y-4">
+                  <Target className="w-24 h-24 mx-auto text-orange-500" />
+                  <p className="text-[var(--muted-foreground)] text-lg">精准推荐</p>
                 </div>
               </div>
             </div>
@@ -153,196 +311,121 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Header */}
-      <section className="py-6 px-6 border-b border-[var(--border)] bg-[var(--background)]">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-[var(--muted-foreground)]">📦 已收录 {products.length} 个 AI 产品</span>
-              <span className="text-[var(--border)]">|</span>
-              <Link href="/directory" className="text-sm font-medium text-[var(--primary)] hover:underline">
-                浏览全部 →
+      {/* Stats Section */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-3 gap-8 text-center">
+            <div className="space-y-2 group cursor-pointer">
+              <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
+                {products.length}+
+              </p>
+              <p className="text-[var(--muted-foreground)] text-lg">收录产品</p>
+            </div>
+            <div className="space-y-2 group cursor-pointer">
+              <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
+                {deepDiveProducts.length}
+              </p>
+              <p className="text-[var(--muted-foreground)] text-lg">播客拆解</p>
+            </div>
+            <div className="space-y-2 group cursor-pointer">
+              <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
+                10+
+              </p>
+              <p className="text-[var(--muted-foreground)] text-lg">产品分类</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Deep Dive Products Showcase */}
+      {deepDiveProducts.length > 0 && (
+        <section className="py-24 bg-[var(--muted)]/50">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-3">播客拆解</h2>
+                <p className="text-[var(--muted-foreground)] text-lg">
+                  深度解析热门 AI 产品
+                </p>
+              </div>
+              <Link
+                href="/deep-dive"
+                className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 text-lg transition-colors"
+              >
+                查看全部
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Featured Product Analysis */}
-      {loading ? (
-        <section className="py-16 px-6 bg-[var(--background)]">
-          <div className="max-w-7xl mx-auto flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-[var(--muted-foreground)]" />
-          </div>
-        </section>
-      ) : featuredProduct ? (
-        <section className="py-16 px-6 bg-[var(--background)]">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-semibold">最新收录</h2>
-            </div>
-
-            <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl overflow-hidden hover:border-[var(--primary)] transition-all duration-300 card-hover">
-              <div className="grid md:grid-cols-5">
-                {/* Left: Logo */}
-                <div className="md:col-span-1 p-8 flex items-center justify-center border-r border-[var(--border)] bg-[var(--secondary)]">
-                  <div className="w-16 h-16 bg-[var(--card)] border border-[var(--border)] rounded-xl flex items-center justify-center overflow-hidden">
-                    {featuredProduct.logo_url ? (
-                      <img src={featuredProduct.logo_url} alt={featuredProduct.name} className="w-10 h-10 object-contain" />
-                    ) : (
-                      <span className="text-3xl">{categoryIcons[featuredProduct.category || ""] || "🚀"}</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Right: Content */}
-                <div className="md:col-span-4 p-8 space-y-6">
-                  <div>
-                    <h3 className="text-2xl font-semibold mb-2">{featuredProduct.name}</h3>
-                    <p className="text-[var(--muted-foreground)]">{featuredProduct.tagline || "AI 产品"}</p>
-                  </div>
-
-                  {/* Analysis Points */}
-                  <div className="space-y-2">
-                    {featuredProduct.ai_analysis?.design_philosophy && (
-                      <div className="flex items-start gap-3 p-4 rounded-lg hover:bg-[var(--secondary)] transition-colors">
-                        <Lightbulb className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--primary)]" />
-                        <div>
-                          <p className="text-sm font-medium mb-1">设计理念</p>
-                          <p className="text-sm text-[var(--muted-foreground)]">{featuredProduct.ai_analysis.design_philosophy}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {featuredProduct.ai_analysis?.target_users && featuredProduct.ai_analysis.target_users.length > 0 && (
-                      <div className="flex items-start gap-3 p-4 rounded-lg hover:bg-[var(--secondary)] transition-colors">
-                        <Users className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--primary)]" />
-                        <div>
-                          <p className="text-sm font-medium mb-1">目标人群</p>
-                          <p className="text-sm text-[var(--muted-foreground)]">{featuredProduct.ai_analysis.target_users.slice(0, 3).join("、")}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {featuredProduct.ai_analysis?.features && featuredProduct.ai_analysis.features.length > 0 && (
-                      <div className="flex items-start gap-3 p-4 rounded-lg hover:bg-[var(--secondary)] transition-colors">
-                        <Package className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--primary)]" />
-                        <div>
-                          <p className="text-sm font-medium mb-1">核心功能</p>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {featuredProduct.ai_analysis.features.slice(0, 4).map((feature, i) => (
-                              <span key={i} className="px-3 py-1.5 bg-[var(--secondary)] text-[var(--secondary-foreground)] rounded text-xs font-mono border border-[var(--border)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] hover:border-[var(--primary)] transition-all cursor-pointer">
-                                {feature.title}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-4 pt-4">
-                    <Link
-                      href={`/product/${featuredProduct.slug}`}
-                      className="group inline-flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-lg font-medium text-sm hover:opacity-90 transition-all"
-                    >
-                      查看完整拆解
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                    {featuredProduct.website_url && (
-                      <a
-                        href={featuredProduct.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--border)] rounded-lg font-medium text-sm hover:border-[var(--primary)] hover:bg-[var(--secondary)] transition-all"
-                      >
-                        访问官网
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {/* More Products */}
-      {recommendedProducts.length > 0 && (
-        <section className="py-16 px-6 bg-[var(--secondary)]">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-semibold">更多推荐</h2>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              {recommendedProducts.map((product) => (
-                <div
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {deepDiveProducts.slice(0, 3).map((product, index) => (
+                <Link
                   key={product.id}
-                  className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 hover:border-[var(--primary)] transition-all duration-300 card-hover"
+                  href={`/product/${product.slug}/deep-dive`}
+                  className="group bg-[var(--card)] rounded-2xl p-6 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  style={{
+                    animationDelay: `${index * 100}ms`
+                  }}
                 >
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 bg-[var(--secondary)] rounded-lg flex items-center justify-center border border-[var(--border)] overflow-hidden">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-14 h-14 bg-[var(--muted)] rounded-xl flex items-center justify-center overflow-hidden">
                       {product.logo_url ? (
-                        <img src={product.logo_url} alt={product.name} className="w-7 h-7 object-contain" />
+                        <img
+                          src={product.logo_url}
+                          alt={product.name}
+                          className="w-8 h-8 object-contain"
+                        />
                       ) : (
-                        <span className="text-2xl">{categoryIcons[product.category || ""] || "🤖"}</span>
+                        <span className="text-2xl">🤖</span>
                       )}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                      <p className="text-sm text-[var(--muted-foreground)] line-clamp-1">{product.tagline || "AI 产品"}</p>
+                      <h3 className="font-semibold text-lg group-hover:text-orange-500 transition-colors">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-[var(--muted-foreground)] line-clamp-1">
+                        {product.tagline}
+                      </p>
                     </div>
                   </div>
-                  {product.tags && product.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {product.tags.slice(0, 2).map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-3 py-1.5 bg-[var(--secondary)] text-[var(--muted-foreground)] rounded text-xs font-mono border border-[var(--border)]"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <Link
-                    href={`/product/${product.slug}`}
-                    className="group inline-flex items-center justify-center gap-2 w-full px-6 py-3 border border-[var(--border)] rounded-lg font-medium text-sm hover:border-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] transition-all"
-                  >
-                    查看拆解
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
+                  <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
+                    <Headphones className="w-4 h-4" />
+                    <span>
+                      {product.podcast_duration
+                        ? `${Math.floor(product.podcast_duration / 60)}分钟`
+                        : "播客拆解"}
+                    </span>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
         </section>
       )}
 
-      {/* Browse All Section */}
-      <section id="archive" className="py-16 px-6 bg-[var(--background)]">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold">探索更多</h2>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6 text-sm">
-            <Link href="/directory" className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors">
-              分类目录
-            </Link>
-            <span className="text-[var(--border)]">|</span>
-            <Link href="/archives" className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors">
-              往期归档
-            </Link>
-            <span className="text-[var(--border)]">|</span>
+      {/* CTA Section - memene gradient style */}
+      <section className="py-20">
+        <div className="space-y-10">
+          <h1 className="bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text py-4 text-center text-4xl font-medium tracking-tight text-transparent md:text-5xl">
+            开始探索 AI 产品世界
+          </h1>
+          <p className="text-[var(--muted-foreground)] text-xl text-center max-w-2xl mx-auto">
+            已收录 {products.length}+ 个优质 AI 产品，等你发现
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/directory"
-              className="font-medium text-[var(--primary)] hover:opacity-80 transition-opacity"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-base font-medium hover:bg-[var(--primary)]/90 transition-all duration-300 hover:scale-105"
             >
-              浏览全部 {products.length} 个产品 →
+              浏览产品目录
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link
+              href="/deep-dive"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--secondary)] rounded-full text-base font-medium hover:bg-[var(--muted)] transition-all duration-300 hover:scale-105"
+            >
+              <Headphones className="w-5 h-5" />
+              收听播客拆解
             </Link>
           </div>
         </div>
