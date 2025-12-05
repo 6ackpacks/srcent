@@ -14,10 +14,254 @@ import {
   ThumbsDown,
   ChevronDown,
   Layers,
-  Loader2
+  Loader2,
+  Play,
+  Pause,
+  Headphones,
+  Clock,
+  Sparkles,
+  Bell,
+  ArrowRight
 } from "lucide-react";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useRef } from "react";
 import { getProductBySlug, type Product } from "@/lib/supabase";
+
+// 格式化时长
+function formatDuration(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// 迷你波形可视化
+function MiniWaveform({ isPlaying }: { isPlaying: boolean }) {
+  const [heights, setHeights] = useState<number[]>([]);
+
+  // 初始化固定高度（确定性）
+  useEffect(() => {
+    const initialHeights = Array.from({ length: 12 }, (_, i) => 30 + Math.sin(i * 0.6) * 20);
+    setHeights(initialHeights);
+  }, []);
+
+  // 播放时随机更新高度
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const interval = setInterval(() => {
+      setHeights(Array.from({ length: 12 }, () => 30 + Math.random() * 70));
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
+  return (
+    <div className="flex items-center gap-0.5 h-8">
+      {Array.from({ length: 12 }, (_, i) => (
+        <div
+          key={i}
+          className="w-0.5 bg-orange-500 rounded-full transition-all duration-150"
+          style={{
+            height: `${heights[i] || 30 + Math.sin(i * 0.6) * 20}%`,
+            opacity: isPlaying ? 1 : 0.6
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// 深度拆解播客卡片组件
+function DeepDiveCard({
+  product,
+  slug
+}: {
+  product: Product;
+  slug: string;
+}) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const handleEnded = () => setIsPlaying(false);
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
+  const togglePlay = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const duration = product.podcast_duration || 300;
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  return (
+    <div className="rounded-2xl overflow-hidden border border-[var(--border)] bg-gradient-to-br from-orange-500/10 via-[var(--card)] to-amber-500/5">
+      {/* 头部标签 */}
+      <div className="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 flex items-center gap-2">
+        <Sparkles className="w-4 h-4 text-white" />
+        <span className="text-sm font-medium text-white">AI 深度拆解</span>
+      </div>
+
+      {/* 内容区域 */}
+      <div className="p-5">
+        {product.podcast_audio_url && (
+          <audio ref={audioRef} src={product.podcast_audio_url} preload="metadata" />
+        )}
+
+        {/* 标题和描述 */}
+        <div className="mb-4">
+          <h3 className="font-semibold mb-1">收听播客深度拆解</h3>
+          <p className="text-sm text-[var(--muted-foreground)]">
+            AI 为你生成的 {product.name} 全方位解读
+          </p>
+        </div>
+
+        {/* 播放控制区 */}
+        {product.podcast_audio_url ? (
+          <div className="space-y-3">
+            {/* 波形和播放按钮 */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={togglePlay}
+                className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center justify-center hover:opacity-90 transition-all active:scale-95 shadow-lg flex-shrink-0"
+              >
+                {isPlaying ? (
+                  <Pause className="w-5 h-5" />
+                ) : (
+                  <Play className="w-5 h-5 ml-0.5" />
+                )}
+              </button>
+              <div className="flex-1">
+                <MiniWaveform isPlaying={isPlaying} />
+              </div>
+            </div>
+
+            {/* 进度条 */}
+            <div className="space-y-1">
+              <div className="h-1 bg-[var(--border)] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-100"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-xs text-[var(--muted-foreground)]">
+                <span>{formatDuration(Math.floor(currentTime))}</span>
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {Math.ceil(duration / 60)} 分钟
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--secondary)]">
+            <Headphones className="w-5 h-5 text-orange-500" />
+            <span className="text-sm text-[var(--muted-foreground)]">音频正在生成中...</span>
+          </div>
+        )}
+
+        {/* 查看完整拆解按钮 */}
+        <Link
+          href={`/product/${slug}/deep-dive`}
+          className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-[var(--secondary)] hover:bg-[var(--muted)] text-[var(--foreground)] px-4 py-2.5 rounded-lg text-sm font-medium transition-colors border border-[var(--border)]"
+        >
+          查看完整拆解
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// 无深度拆解时的占位卡片
+function ComingSoonCard({ product }: { product: Product }) {
+  const analysis = product.ai_analysis || {};
+
+  // 提取一些亮点数据
+  const highlights: string[] = [];
+  if (analysis.strengths && analysis.strengths.length > 0) {
+    highlights.push(...analysis.strengths.slice(0, 2));
+  }
+  if (analysis.features && analysis.features.length > 0) {
+    highlights.push(...analysis.features.slice(0, 2).map(f => f.title));
+  }
+
+  return (
+    <div className="rounded-2xl overflow-hidden border border-[var(--border)] bg-[var(--card)]">
+      {/* 头部 - 即将上线 */}
+      <div className="px-4 py-3 bg-gradient-to-r from-[var(--secondary)] to-[var(--muted)] border-b border-[var(--border)]">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-[var(--primary)]/10 flex items-center justify-center">
+            <Headphones className="w-4 h-4 text-[var(--primary)]" />
+          </div>
+          <div>
+            <p className="text-sm font-medium">深度拆解即将上线</p>
+            <p className="text-xs text-[var(--muted-foreground)]">AI 正在为你准备播客内容</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 产品亮点预览 */}
+      <div className="p-4">
+        <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-[var(--primary)]" />
+          产品亮点
+        </h4>
+
+        {highlights.length > 0 ? (
+          <ul className="space-y-2">
+            {highlights.slice(0, 3).map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-[var(--muted-foreground)]">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="line-clamp-2">{item}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-[var(--muted-foreground)]">
+            {product.tagline || '探索这款 AI 产品的独特之处'}
+          </p>
+        )}
+
+        {/* 订阅通知 */}
+        <div className="mt-4 p-3 rounded-lg bg-[var(--secondary)] border border-[var(--border)]">
+          <div className="flex items-center gap-2 mb-2">
+            <Bell className="w-4 h-4 text-[var(--primary)]" />
+            <span className="text-sm font-medium">获取更新通知</span>
+          </div>
+          <p className="text-xs text-[var(--muted-foreground)] mb-3">
+            深度拆解上线后第一时间通知你
+          </p>
+          <Link
+            href="/#subscribe"
+            className="w-full inline-flex items-center justify-center gap-2 bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            订阅通知
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Tab 组件
 const tabs = [
@@ -152,25 +396,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
 
-            {/* Right: Screenshot */}
+            {/* Right: Deep Dive Card or Coming Soon */}
             <div className="col-span-5">
-              <div className="rounded-xl overflow-hidden border border-[var(--border)] bg-[var(--card)]">
-                <div className="bg-[var(--secondary)] px-3 py-2 flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-red-500/80"></span>
-                    <span className="w-3 h-3 rounded-full bg-yellow-500/80"></span>
-                    <span className="w-3 h-3 rounded-full bg-green-500/80"></span>
-                  </div>
-                  <span className="text-xs text-[var(--muted-foreground)] ml-2 font-mono truncate">{product.website_url}</span>
-                </div>
-                <div className="aspect-video bg-[var(--muted)] flex items-center justify-center">
-                  {product.screenshot_url ? (
-                    <img src={product.screenshot_url} alt={`${product.name} screenshot`} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-6xl">🖼️</span>
-                  )}
-                </div>
-              </div>
+              {product.has_deep_dive ? (
+                <DeepDiveCard product={product} slug={slug} />
+              ) : (
+                <ComingSoonCard product={product} />
+              )}
             </div>
           </div>
 

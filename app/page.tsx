@@ -9,9 +9,14 @@ import {
   Headphones,
   Brain,
   Target,
+  FileText,
+  MessageSquare,
+  TrendingUp,
+  Globe,
 } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getProducts, getDeepDiveProducts, type Product } from "@/lib/supabase";
+import { FadeInUp, StaggerContainer, StaggerItem, Parallax, ScaleIn } from "@/components/Animations";
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -167,173 +172,269 @@ export default function Home() {
       {/* Features Section - memene style */}
       <section id="features" className="max-w-6xl mx-auto space-y-20 px-6 pt-20">
         {/* Feature 1: AI Analysis */}
-        <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
-          <div className="flex flex-col gap-10 lg:order-1">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
-                  AI 智能分析
-                </h2>
-                <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
-                  基于大语言模型，深度解析每个 AI 产品的设计理念、核心功能与目标用户
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 items-start gap-6 lg:pl-6">
-              <div className="flex flex-row items-start gap-6 group cursor-pointer">
-                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
-                <div className="flex flex-col gap-1">
-                  <p className="font-medium">设计理念洞察</p>
-                  <p className="text-sm text-[var(--muted-foreground)]">
-                    挖掘产品背后的设计哲学，理解创始团队的愿景与思考
+        <FadeInUp y={80} duration={0.8}>
+          <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
+            <div className="flex flex-col gap-10 lg:order-1">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
+                    AI 智能分析
+                  </h2>
+                  <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
+                    基于大语言模型，深度解析每个 AI 产品的设计理念、核心功能与目标用户
                   </p>
                 </div>
               </div>
-              <div className="flex flex-row items-start gap-6 group cursor-pointer">
-                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
-                <div className="flex flex-col gap-1">
-                  <p className="font-medium">功能深度拆解</p>
-                  <p className="text-sm text-[var(--muted-foreground)]">
-                    逐一分析核心功能，对比竞品优劣势，给出客观评价
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="flex items-center justify-center lg:order-2">
-            <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <Brain className="w-24 h-24 mx-auto text-orange-500" />
-                  <p className="text-[var(--muted-foreground)] text-lg">AI 驱动分析</p>
+              <StaggerContainer className="grid grid-cols-1 items-start gap-6 lg:pl-6" staggerDelay={0.15}>
+                <StaggerItem>
+                  <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                    <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium">设计理念洞察</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        挖掘产品背后的设计哲学，理解创始团队的愿景与思考
+                      </p>
+                    </div>
+                  </div>
+                </StaggerItem>
+                <StaggerItem>
+                  <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                    <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium">功能深度拆解</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        逐一分析核心功能，对比竞品优劣势，给出客观评价
+                      </p>
+                    </div>
+                  </div>
+                </StaggerItem>
+              </StaggerContainer>
+            </div>
+
+            <Parallax speed={30} className="flex items-center justify-center lg:order-2">
+              <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <Brain className="w-24 h-24 mx-auto text-orange-500" />
+                    <p className="text-[var(--muted-foreground)] text-lg">AI 驱动分析</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Parallax>
           </div>
-        </div>
+        </FadeInUp>
 
         {/* Feature 2: Podcast Deep Dive */}
-        <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
-          <div className="flex flex-col gap-10 lg:order-2">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
-                  播客深度拆解
-                </h2>
-                <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
-                  将多篇行业文章精华提炼，生成双人对话播客，边听边学
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 items-start gap-6 lg:pl-6">
-              <div className="flex flex-row items-start gap-6 group cursor-pointer">
-                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
-                <div className="flex flex-col gap-1">
-                  <p className="font-medium">多源信息整合</p>
-                  <p className="text-sm text-[var(--muted-foreground)]">
-                    聚合行业文章、媒体报道、用户评价，多角度呈现产品全貌
+        <FadeInUp y={80} duration={0.8}>
+          <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
+            <div className="flex flex-col gap-10 lg:order-2">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
+                    播客深度拆解
+                  </h2>
+                  <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
+                    将多篇行业文章精华提炼，生成双人对话播客，边听边学
                   </p>
                 </div>
               </div>
-              <div className="flex flex-row items-start gap-6 group cursor-pointer">
-                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
-                <div className="flex flex-col gap-1">
-                  <p className="font-medium">AI 语音播客</p>
-                  <p className="text-sm text-[var(--muted-foreground)]">
-                    双人对话形式，轻松愉快地了解产品精髓，适合通勤收听
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="flex items-center justify-center lg:order-1">
-            <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <Headphones className="w-24 h-24 mx-auto text-orange-500" />
-                  <p className="text-[var(--muted-foreground)] text-lg">播客拆解</p>
+              <StaggerContainer className="grid grid-cols-1 items-start gap-6 lg:pl-6" staggerDelay={0.15}>
+                <StaggerItem>
+                  <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                    <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium">多源信息整合</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        聚合行业文章、媒体报道、用户评价，多角度呈现产品全貌
+                      </p>
+                    </div>
+                  </div>
+                </StaggerItem>
+                <StaggerItem>
+                  <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                    <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium">AI 语音播客</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        双人对话形式，轻松愉快地了解产品精髓，适合通勤收听
+                      </p>
+                    </div>
+                  </div>
+                </StaggerItem>
+              </StaggerContainer>
+            </div>
+
+            <Parallax speed={30} className="flex items-center justify-center lg:order-1">
+              <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <Headphones className="w-24 h-24 mx-auto text-orange-500" />
+                    <p className="text-[var(--muted-foreground)] text-lg">播客拆解</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Parallax>
           </div>
-        </div>
+        </FadeInUp>
 
         {/* Feature 3: Smart Discovery */}
-        <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
-          <div className="flex flex-col gap-10 lg:order-1">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
-                  智能发现推荐
-                </h2>
-                <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
-                  根据你的兴趣和使用场景，精准推荐最适合的 AI 工具
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 items-start gap-6 lg:pl-6">
-              <div className="flex flex-row items-start gap-6 group cursor-pointer">
-                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
-                <div className="flex flex-col gap-1">
-                  <p className="font-medium">分类导航</p>
-                  <p className="text-sm text-[var(--muted-foreground)]">
-                    文本、图像、视频、代码... 按需求快速找到目标产品
+        <FadeInUp y={80} duration={0.8}>
+          <div className="grid grid-cols-1 items-center gap-12 rounded-lg py-8 lg:grid-cols-2">
+            <div className="flex flex-col gap-10 lg:order-1">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <h2 className="font-normal max-w-xl text-left text-2xl tracking-tighter lg:text-4xl">
+                    智能发现推荐
+                  </h2>
+                  <p className="text-md max-w-xl text-left leading-relaxed tracking-tight text-[var(--muted-foreground)]">
+                    根据你的兴趣和使用场景，精准推荐最适合的 AI 工具
                   </p>
                 </div>
               </div>
-              <div className="flex flex-row items-start gap-6 group cursor-pointer">
-                <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
-                <div className="flex flex-col gap-1">
-                  <p className="font-medium">替代方案对比</p>
+
+              <StaggerContainer className="grid grid-cols-1 items-start gap-6 lg:pl-6" staggerDelay={0.15}>
+                <StaggerItem>
+                  <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                    <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium">分类导航</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        文本、图像、视频、代码... 按需求快速找到目标产品
+                      </p>
+                    </div>
+                  </div>
+                </StaggerItem>
+                <StaggerItem>
+                  <div className="flex flex-row items-start gap-6 group cursor-pointer">
+                    <Check className="mt-2 h-4 w-4 text-orange-500 transition-transform group-hover:scale-125" />
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium">替代方案对比</p>
+                      <p className="text-sm text-[var(--muted-foreground)]">
+                        每个产品都有替代方案推荐，帮你做出最佳选择
+                      </p>
+                    </div>
+                  </div>
+                </StaggerItem>
+              </StaggerContainer>
+            </div>
+
+            <Parallax speed={30} className="flex items-center justify-center lg:order-2">
+              <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <Target className="w-24 h-24 mx-auto text-orange-500" />
+                    <p className="text-[var(--muted-foreground)] text-lg">精准推荐</p>
+                  </div>
+                </div>
+              </div>
+            </Parallax>
+          </div>
+        </FadeInUp>
+      </section>
+
+      {/* Aggregated Sources Section - 视差淡入动画 */}
+      <section className="py-24 bg-gradient-to-b from-transparent via-[var(--muted)]/30 to-transparent">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeInUp y={60} duration={0.7}>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold mb-4">Aggregated Sources</h2>
+              <p className="text-[var(--muted-foreground)] text-lg max-w-2xl mx-auto">
+                多渠道信息聚合，为你呈现最全面的 AI 产品视角
+              </p>
+            </div>
+          </FadeInUp>
+
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.1}>
+            <StaggerItem>
+              <Parallax speed={20}>
+                <div className="group p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg">
+                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <FileText className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">官方文档</h3>
                   <p className="text-sm text-[var(--muted-foreground)]">
-                    每个产品都有替代方案推荐，帮你做出最佳选择
+                    产品官网、帮助中心、API 文档等一手资料
                   </p>
                 </div>
-              </div>
-            </div>
-          </div>
+              </Parallax>
+            </StaggerItem>
 
-          <div className="flex items-center justify-center lg:order-2">
-            <div className="aspect-square w-full max-w-[20rem] rounded-xl bg-[var(--muted)] overflow-hidden transition-transform duration-300 hover:scale-105">
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <Target className="w-24 h-24 mx-auto text-orange-500" />
-                  <p className="text-[var(--muted-foreground)] text-lg">精准推荐</p>
+            <StaggerItem>
+              <Parallax speed={25}>
+                <div className="group p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg">
+                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <MessageSquare className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">用户评价</h3>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    来自 ProductHunt、G2、Reddit 等平台的真实反馈
+                  </p>
                 </div>
-              </div>
-            </div>
-          </div>
+              </Parallax>
+            </StaggerItem>
+
+            <StaggerItem>
+              <Parallax speed={30}>
+                <div className="group p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg">
+                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">行业分析</h3>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    36Kr、极客公园、TechCrunch 等媒体深度报道
+                  </p>
+                </div>
+              </Parallax>
+            </StaggerItem>
+
+            <StaggerItem>
+              <Parallax speed={35}>
+                <div className="group p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] hover:border-orange-500/50 transition-all duration-300 hover:shadow-lg">
+                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Globe className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">社区讨论</h3>
+                  <p className="text-sm text-[var(--muted-foreground)]">
+                    Twitter、微博、知乎等社交平台热门讨论
+                  </p>
+                </div>
+              </Parallax>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Stats Section */}
       <section className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-3 gap-8 text-center">
-            <div className="space-y-2 group cursor-pointer">
-              <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
-                {products.length}+
-              </p>
-              <p className="text-[var(--muted-foreground)] text-lg">收录产品</p>
-            </div>
-            <div className="space-y-2 group cursor-pointer">
-              <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
-                {deepDiveProducts.length}
-              </p>
-              <p className="text-[var(--muted-foreground)] text-lg">播客拆解</p>
-            </div>
-            <div className="space-y-2 group cursor-pointer">
-              <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
-                10+
-              </p>
-              <p className="text-[var(--muted-foreground)] text-lg">产品分类</p>
-            </div>
-          </div>
+          <StaggerContainer className="grid grid-cols-3 gap-8 text-center" staggerDelay={0.15}>
+            <StaggerItem>
+              <div className="space-y-2 group cursor-pointer">
+                <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
+                  {products.length}+
+                </p>
+                <p className="text-[var(--muted-foreground)] text-lg">收录产品</p>
+              </div>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="space-y-2 group cursor-pointer">
+                <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
+                  {deepDiveProducts.length}
+                </p>
+                <p className="text-[var(--muted-foreground)] text-lg">播客拆解</p>
+              </div>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="space-y-2 group cursor-pointer">
+                <p className="text-5xl md:text-6xl font-bold bg-gradient-to-br from-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300 inline-block">
+                  10+
+                </p>
+                <p className="text-[var(--muted-foreground)] text-lg">产品分类</p>
+              </div>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 

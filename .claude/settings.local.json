@@ -19,7 +19,10 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: AI Scent platform\n\n- Next.js App Router with product discovery pages\n- AI-powered product analysis system\n- Data ingestion pipeline (Firecrawl/Playwright + LLM)\n- Supabase database integration\n- Tailwind CSS styling\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git branch -M main)",
       "Bash(git push -u origin main)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: memene风格首页重构与播客深度拆解功能\n\n- 首页采用memene.cn风格重构\n  - 全屏Hero区域带浮动动画\n  - 滚动指示器弹跳动画\n  - Features区域居中布局\n  - 橙色主题配色(orange-500)\n  - 卡片hover缩放效果\n  \n- Header滚动效果优化\n  - 滚动后显示卡片式容器\n  - 移动端菜单遮罩层\n  \n- 新增播客深度拆解功能\n  - deep-dive页面和产品详情页\n  - Coze API TTS集成\n  - 播客生成脚本\n  \n- Tailwind动画配置\n  - float/float-delayed浮动\n  - scroll-bounce滚动指示\n  - fade-up/fade-in淡入\n  \n- 数据库schema更新\n  - 播客相关字段\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: memene风格首页重构与播客深度拆解功能\n\n- 首页采用memene.cn风格重构\n  - 全屏Hero区域带浮动动画\n  - 滚动指示器弹跳动画\n  - Features区域居中布局\n  - 橙色主题配色(orange-500)\n  - 卡片hover缩放效果\n  \n- Header滚动效果优化\n  - 滚动后显示卡片式容器\n  - 移动端菜单遮罩层\n  \n- 新增播客深度拆解功能\n  - deep-dive页面和产品详情页\n  - Coze API TTS集成\n  - 播客生成脚本\n  \n- Tailwind动画配置\n  - float/float-delayed浮动\n  - scroll-bounce滚动指示\n  - fade-up/fade-in淡入\n  \n- 数据库schema更新\n  - 播客相关字段\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(npm install lenis @studio-freight/react-lenis framer-motion)",
+      "Bash(npm install lenis framer-motion --legacy-peer-deps)",
+      "Bash(npm run build)"
     ],
     "deny": [],
     "ask": []

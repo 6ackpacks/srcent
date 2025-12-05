@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, Search, Sun, Moon, X } from "lucide-react";
+import { Menu, Sun, Moon, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 export default function Header() {
@@ -22,7 +22,7 @@ export default function Header() {
   }, []);
 
   const navLinks = [
-    { href: "/", label: "AI工作台", icon: "🤖" },
+    { href: "/", label: "首页" },
     { href: "/directory", label: "分类目录" },
     { href: "/deep-dive", label: "产品拆解" },
     { href: "/about", label: "关于我们" },
@@ -89,7 +89,6 @@ export default function Header() {
                       : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--secondary)]"
                   }`}
                 >
-                  {link.icon && <span className="mr-1.5">{link.icon}</span>}
                   {link.label}
                 </Link>
               ))}
@@ -97,11 +96,6 @@ export default function Header() {
 
             {/* Right side */}
             <div className="flex items-center gap-1">
-              {/* Search */}
-              <button className="p-2.5 rounded-xl hover:bg-[var(--secondary)] transition-all duration-300">
-                <Search className="w-5 h-5 text-[var(--muted-foreground)]" />
-              </button>
-
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
@@ -171,7 +165,6 @@ export default function Header() {
                     : "text-[var(--foreground)] hover:bg-[var(--secondary)]"
                 }`}
               >
-                {link.icon && <span className="mr-2">{link.icon}</span>}
                 {link.label}
               </Link>
             ))}
