@@ -1,9 +1,16 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// 创建 Supabase 客户端，如果环境变量缺失则返回 null
+let supabase: SupabaseClient | null = null;
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
+}
+
+export { supabase };
 
 // 产品类型定义
 export interface Feature {
@@ -76,6 +83,8 @@ export interface SourceArticle {
 
 // 获取所有产品（可选：按状态过滤）
 export async function getProducts(status?: 'draft' | 'published' | 'archived') {
+  if (!supabase) return [];
+
   let query = supabase
     .from('products')
     .select('*')
@@ -97,6 +106,8 @@ export async function getProducts(status?: 'draft' | 'published' | 'archived') {
 
 // 按分类获取产品
 export async function getProductsByCategory(category: string) {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -113,6 +124,8 @@ export async function getProductsByCategory(category: string) {
 
 // 获取单个产品
 export async function getProductBySlug(slug: string) {
+  if (!supabase) return null;
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -129,6 +142,8 @@ export async function getProductBySlug(slug: string) {
 
 // 获取所有分类
 export async function getCategories() {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('products')
     .select('category')
@@ -146,6 +161,8 @@ export async function getCategories() {
 
 // 搜索产品
 export async function searchProducts(query: string) {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -162,6 +179,8 @@ export async function searchProducts(query: string) {
 
 // 获取产品的来源文章
 export async function getSourceArticles(productId: string) {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('source_articles')
     .select('*')
@@ -178,6 +197,8 @@ export async function getSourceArticles(productId: string) {
 
 // 获取有深度拆解的产品
 export async function getDeepDiveProducts() {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
