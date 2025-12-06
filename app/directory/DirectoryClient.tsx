@@ -129,13 +129,14 @@ export default function DirectoryClient({ initialProducts, initialCategories }: 
                         href={`/product/${product.slug}/deep-dive`}
                         className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-xs font-medium hover:opacity-90 transition-opacity"
                         onClick={(e) => e.stopPropagation()}
+                        prefetch={false}
                       >
                         <Headphones className="w-3 h-3" />
                         深度拆解
                       </Link>
                     )}
 
-                    <Link href={`/product/${product.slug}`} className="block">
+                    <Link href={`/product/${product.slug}`} className="block" prefetch={false}>
                       <div className="flex flex-col gap-4">
                         {/* Product Icon */}
                         <div className="flex items-start justify-between">
