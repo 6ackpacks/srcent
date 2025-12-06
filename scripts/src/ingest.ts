@@ -15,7 +15,7 @@ dotenv.config({ path: path.join(ROOT_DIR, '.env') });
 
 import { crawl } from './crawler.js';
 import { analyzeProduct } from './analyzer.js';
-import { initDB, insertProduct, getProductBySlug, uploadScreenshot } from './db.js';
+import { initDB, insertProduct, getProductBySlug, getProductByUrl, uploadScreenshot } from './db.js';
 import type { IngestConfig, Product } from './types.js';
 
 // 读取待处理的 URL 列表
@@ -48,6 +48,13 @@ async function processUrl(config: IngestConfig): Promise<void> {
   console.log(`\n🔍 Processing: ${url}`);
 
   try {
+    // 0. 先检查 URL 是否已存在（节省爬取和分析的资源）
+    const existingByUrl = await getProductByUrl(url);
+    if (existingByUrl) {
+      console.log(`  ⏭️  URL already exists as "${existingByUrl.name}", skipping...`);
+      return;
+    }
+
     // 1. 爬取网页
     console.log('  📡 Crawling...');
     const crawlResult = await crawl(url);

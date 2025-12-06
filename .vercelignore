@@ -1,0 +1,7 @@
+# 忽略本地脚本目录
+scripts/
+
+# 其他不需要部署的文件
+pending.json
+urls.txt
+*.local

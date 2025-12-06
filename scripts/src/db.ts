@@ -59,6 +59,26 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   return data;
 }
 
+// 通过 URL 检查产品是否已存在
+export async function getProductByUrl(url: string): Promise<Product | null> {
+  // 标准化 URL（去除末尾斜杠，统一协议）
+  const normalizedUrl = url.replace(/\/$/, '').toLowerCase();
+
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .or(`website_url.ilike.${normalizedUrl},website_url.ilike.${normalizedUrl}/`)
+    .limit(1)
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    // PGRST116 是"没找到记录"的错误码，这是正常的
+    console.error('Error checking URL:', error.message);
+  }
+
+  return data || null;
+}
+
 export async function insertReview(review: Omit<Review, 'id' | 'created_at'>): Promise<Review> {
   const { data, error } = await supabase
     .from('reviews')
