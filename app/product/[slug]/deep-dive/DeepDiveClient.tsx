@@ -167,23 +167,23 @@ function PodcastPlayer({
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--card)] to-[var(--secondary)] border border-[var(--border)] p-8 backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-[var(--card)] to-[var(--secondary)] border border-[var(--border)] p-4 sm:p-6 md:p-8 backdrop-blur-xl">
       {/* 背景装饰 */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-[var(--primary)] rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[var(--primary)] rounded-full blur-3xl" />
+        <div className="absolute top-0 left-0 w-32 sm:w-64 h-32 sm:h-64 bg-[var(--primary)] rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-48 sm:w-96 h-48 sm:h-96 bg-[var(--primary)] rounded-full blur-3xl" />
       </div>
 
       <audio ref={audioRef} src={audioUrl} preload="metadata" />
 
       {/* 标题 */}
-      <div className="relative z-10 text-center mb-6">
-        <p className="text-sm text-[var(--muted-foreground)] mb-2">正在收听</p>
-        <h2 className="text-xl font-semibold">{productName} 深度拆解</h2>
+      <div className="relative z-10 text-center mb-4 sm:mb-6">
+        <p className="text-xs sm:text-sm text-[var(--muted-foreground)] mb-1 sm:mb-2">正在收听</p>
+        <h2 className="text-base sm:text-xl font-semibold truncate px-4">{productName} 深度拆解</h2>
       </div>
 
       {/* 波形可视化 */}
-      <div className="relative z-10 mb-6">
+      <div className="relative z-10 mb-4 sm:mb-6">
         <WaveformVisualizer isPlaying={isPlaying} />
       </div>
 
@@ -215,31 +215,31 @@ function PodcastPlayer({
       </div>
 
       {/* 控制按钮 */}
-      <div className="relative z-10 flex items-center justify-center gap-6">
+      <div className="relative z-10 flex items-center justify-center gap-4 sm:gap-6">
         <button
           onClick={toggleMute}
-          className="p-3 rounded-full hover:bg-[var(--secondary)] transition-colors"
+          className="p-2 sm:p-3 rounded-full hover:bg-[var(--secondary)] transition-colors"
         >
           {isMuted ? (
-            <VolumeX className="w-5 h-5 text-[var(--muted-foreground)]" />
+            <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--muted-foreground)]" />
           ) : (
-            <Volume2 className="w-5 h-5 text-[var(--muted-foreground)]" />
+            <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--muted-foreground)]" />
           )}
         </button>
 
         <button
           onClick={togglePlay}
-          className="w-16 h-16 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center hover:opacity-90 transition-all active:scale-95 shadow-lg"
+          className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center hover:opacity-90 transition-all active:scale-95 shadow-lg"
         >
           {isPlaying ? (
-            <Pause className="w-6 h-6" />
+            <Pause className="w-5 h-5 sm:w-6 sm:h-6" />
           ) : (
-            <Play className="w-6 h-6 ml-1" />
+            <Play className="w-5 h-5 sm:w-6 sm:h-6 ml-0.5 sm:ml-1" />
           )}
         </button>
 
-        <div className="p-3 flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
-          <Clock className="w-4 h-4" />
+        <div className="p-2 sm:p-3 flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
+          <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
           <span>{Math.ceil(duration / 60)} 分钟</span>
         </div>
       </div>
@@ -287,39 +287,40 @@ interface DeepDiveClientProps {
 
 export default function DeepDiveClient({ product, sources, slug }: DeepDiveClientProps) {
   return (
-    <div className="pt-24 pb-20 px-6">
+    <div className="pt-20 sm:pt-24 pb-16 sm:pb-20 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] mb-8">
-          <Link href="/" className="hover:text-[var(--foreground)] transition-colors">首页</Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <Link href="/directory" className="hover:text-[var(--foreground)] transition-colors">分类目录</Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <Link href={`/product/${slug}`} className="hover:text-[var(--foreground)] transition-colors">{product.name}</Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[var(--foreground)]">深度拆解</span>
+        {/* Breadcrumb - 移动端隐藏部分 */}
+        <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-[var(--muted-foreground)] mb-6 sm:mb-8 overflow-x-auto">
+          <Link href="/" className="hover:text-[var(--foreground)] transition-colors whitespace-nowrap">首页</Link>
+          <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+          <Link href="/directory" className="hover:text-[var(--foreground)] transition-colors whitespace-nowrap hidden sm:inline">分类目录</Link>
+          <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 hidden sm:inline" />
+          <Link href={`/product/${slug}`} className="hover:text-[var(--foreground)] transition-colors whitespace-nowrap truncate max-w-[100px] sm:max-w-none">{product.name}</Link>
+          <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+          <span className="text-[var(--foreground)] whitespace-nowrap">深度拆解</span>
         </div>
 
         {/* 返回链接 */}
         <Link
           href={`/product/${slug}`}
-          className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-6 sm:mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          返回 {product.name}
+          <span className="hidden sm:inline">返回 {product.name}</span>
+          <span className="sm:hidden">返回</span>
         </Link>
 
         {/* Hero 区域 */}
-        <div className="mb-12 animate-fade-in">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="mb-8 sm:mb-12 animate-fade-in">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
             {product.logo_url && (
-              <div className="w-16 h-16 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-center overflow-hidden">
-                <img src={product.logo_url} alt={product.name} className="w-10 h-10 object-contain" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-center overflow-hidden flex-shrink-0">
+                <img src={product.logo_url} alt={product.name} className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
               </div>
             )}
-            <div>
-              <h1 className="text-2xl font-bold">{product.name}</h1>
-              <p className="text-[var(--muted-foreground)]">{product.tagline}</p>
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold truncate">{product.name}</h1>
+              <p className="text-sm sm:text-base text-[var(--muted-foreground)] line-clamp-2">{product.tagline}</p>
             </div>
           </div>
 
@@ -333,20 +334,20 @@ export default function DeepDiveClient({ product, sources, slug }: DeepDiveClien
           )}
         </div>
 
-        {/* 主内容区域 */}
-        <div className="grid grid-cols-12 gap-8">
+        {/* 主内容区域 - 响应式布局 */}
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-8">
           {/* 文稿内容 */}
-          <main className="col-span-8">
+          <main className="lg:col-span-8 order-2 lg:order-1">
             <div className="prose prose-lg max-w-none">
-              <h2 className="text-xl font-semibold mb-6 text-[var(--primary)] flex items-center gap-2">
-                <span className="w-8 h-8 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center text-sm">
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-[var(--primary)] flex items-center gap-2">
+                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center text-xs sm:text-sm">
                   📝
                 </span>
                 播客文稿
               </h2>
-              <div className="bg-[var(--card)] rounded-xl border border-[var(--border)] p-6 md:p-8">
+              <div className="bg-[var(--card)] rounded-xl border border-[var(--border)] p-4 sm:p-6 md:p-8">
                 {product.podcast_transcript ? (
-                  <div className="space-y-0">
+                  <div className="space-y-0 text-sm sm:text-base">
                     {renderMarkdown(product.podcast_transcript)}
                   </div>
                 ) : (
@@ -357,18 +358,22 @@ export default function DeepDiveClient({ product, sources, slug }: DeepDiveClien
           </main>
 
           {/* 侧边栏 - 灵感来源 */}
-          <aside className="col-span-4">
-            <div className="sticky top-24">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[var(--primary)]" />
+          <aside className="lg:col-span-4 order-1 lg:order-2">
+            <div className="lg:sticky lg:top-24">
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--primary)]" />
                 灵感来源
               </h3>
-              <p className="text-sm text-[var(--muted-foreground)] mb-4">
+              <p className="text-xs sm:text-sm text-[var(--muted-foreground)] mb-3 sm:mb-4">
                 本次深度拆解综合了以下 {sources.length} 篇文章的精华观点
               </p>
-              <div className="space-y-3">
+
+              {/* 移动端横向滚动，桌面端垂直列表 */}
+              <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
                 {sources.map((source) => (
-                  <SourceCard key={source.id} source={source} />
+                  <div key={source.id} className="flex-shrink-0 w-[280px] sm:w-[300px] lg:w-full">
+                    <SourceCard source={source} />
+                  </div>
                 ))}
               </div>
 
@@ -378,7 +383,7 @@ export default function DeepDiveClient({ product, sources, slug }: DeepDiveClien
                   href={product.website_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 w-full inline-flex items-center justify-center gap-2 bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-3 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity"
+                  className="mt-4 sm:mt-6 w-full inline-flex items-center justify-center gap-2 bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2.5 sm:py-3 rounded-lg font-medium text-sm hover:opacity-90 transition-opacity"
                 >
                   访问 {product.name} 官网
                   <ExternalLink className="w-4 h-4" />
