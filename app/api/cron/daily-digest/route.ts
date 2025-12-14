@@ -1,12 +1,18 @@
 // 每日产品日报推送 API (Vercel Cron Job)
 // 每天早上 9:00 (UTC+8) 自动执行
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
 import DailyDigestEmail from "@/emails/DailyDigestEmail";
 
-// 初始化 Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+// 延迟初始化 Resend（避免 build 时报错）
+let resend: any = null;
+function getResend() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    const { Resend } = require("resend");
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 // 初始化 Supabase
 const supabase = createClient(
@@ -121,6 +127,15 @@ export async function GET(request: NextRequest) {
     let successCount = 0;
     let failCount = 0;
 
+    const resendClient = getResend();
+    if (!resendClient) {
+      return NextResponse.json({
+        success: true,
+        message: "Resend 客户端初始化失败",
+        sent: 0,
+      });
+    }
+
     // Resend 批量发送（每批最多 100 封）
     const batchSize = 100;
     for (let i = 0; i < subscribers.length; i += batchSize) {
@@ -128,10 +143,10 @@ export async function GET(request: NextRequest) {
 
       const promises = batch.map(async (subscriber) => {
         try {
-          await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL || "srcent <onboarding@resend.dev>",
+          await resendClient.emails.send({
+            from: process.env.RESEND_FROM_EMAIL || "Srcent <onboarding@resend.dev>",
             to: subscriber.email,
-            subject: `srcent AI 产品日报 - ${date}`,
+            subject: `Srcent AI 产品日报 - ${date}`,
             react: DailyDigestEmail({
               email: subscriber.email,
               date,

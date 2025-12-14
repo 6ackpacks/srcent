@@ -1,11 +1,17 @@
 // 邮箱订阅 API
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
 import DailyDigestEmail from "@/emails/DailyDigestEmail";
 
-// 初始化 Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+// 延迟初始化 Resend（避免 build 时报错）
+let resend: any = null;
+function getResend() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    const { Resend } = require("resend");
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 // 初始化 Supabase
 const supabase = createClient(
@@ -97,7 +103,8 @@ export async function POST(request: NextRequest) {
     ).slice(0, 4) || [];
 
     // 发送首期日报邮件（替代欢迎邮件）
-    if (process.env.RESEND_API_KEY && (featuredProduct || otherProducts.length > 0)) {
+    const resendClient = getResend();
+    if (resendClient && (featuredProduct || otherProducts.length > 0)) {
       const date = new Date().toLocaleDateString("zh-CN", {
         year: "numeric",
         month: "long",
@@ -105,7 +112,7 @@ export async function POST(request: NextRequest) {
       });
 
       try {
-        await resend.emails.send({
+        await resendClient.emails.send({
           from: process.env.RESEND_FROM_EMAIL || "Srcent <onboarding@resend.dev>",
           to: email.toLowerCase(),
           subject: `欢迎订阅！这是你的首期 AI 产品日报 - ${date}`,
