@@ -1,22 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { Search, ArrowUpRight, Headphones, Menu, X } from "lucide-react";
+import { Search, ArrowUpRight, Headphones, Check } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { type Product } from "@/lib/supabase";
 
 // 分类映射（中文显示）
 const categoryLabels: Record<string, { label: string; icon: string }> = {
-  "all": { label: "全部", icon: "📦" },
-  "文本": { label: "文本生成", icon: "✍️" },
-  "图像": { label: "图像生成", icon: "🎨" },
-  "视频": { label: "视频创作", icon: "🎬" },
-  "代码": { label: "代码辅助", icon: "💻" },
-  "音频": { label: "音频工具", icon: "🎵" },
-  "效率": { label: "效率工具", icon: "⚡" },
-  "设计": { label: "设计工具", icon: "🖼️" },
-  "搜索": { label: "搜索研究", icon: "🔍" },
-  "对话": { label: "AI 对话", icon: "💬" },
+  "all": { label: "全部产品", icon: "📦" },
+  "通用助手": { label: "通用助手", icon: "🤖" },
+  "图像生成": { label: "图像生成", icon: "🎨" },
+  "视频创作": { label: "视频创作", icon: "🎬" },
+  "音频处理": { label: "音频处理", icon: "🎵" },
+  "编程开发": { label: "编程开发", icon: "💻" },
+  "智能搜索": { label: "智能搜索", icon: "🔍" },
+  "知识管理": { label: "知识管理", icon: "📚" },
+  "写作辅助": { label: "写作辅助", icon: "✍️" },
+  "智能硬件": { label: "智能硬件", icon: "🔧" },
+  "虚拟陪伴": { label: "虚拟陪伴", icon: "💬" },
+  "Agent构建": { label: "Agent 构建", icon: "🛠️" },
+  "效率工具": { label: "效率工具", icon: "⚡" },
+  "3D生成": { label: "3D 生成", icon: "🎮" },
+  "科研辅助": { label: "科研辅助", icon: "🔬" },
+  "其他类型": { label: "其他类型", icon: "📁" },
 };
 
 // 每次加载的产品数量
@@ -136,10 +142,9 @@ interface DirectoryClientProps {
 }
 
 export default function DirectoryClient({ initialProducts, initialCategories }: DirectoryClientProps) {
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // 生成随机种子（每次页面加载时不同）
@@ -153,7 +158,9 @@ export default function DirectoryClient({ initialProducts, initialCategories }: 
   // 过滤产品
   const filteredProducts = useMemo(() => {
     return shuffledProducts.filter((product) => {
-      const matchesCategory = activeCategory === "all" || product.category === activeCategory;
+      // 如果没有选中任何分类，显示所有产品
+      const matchesCategory = selectedCategories.length === 0 ||
+        selectedCategories.includes(product.category || "");
       const matchesSearch =
         searchQuery === "" ||
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -161,7 +168,7 @@ export default function DirectoryClient({ initialProducts, initialCategories }: 
         (product.tags && product.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())));
       return matchesCategory && matchesSearch;
     });
-  }, [shuffledProducts, activeCategory, searchQuery]);
+  }, [shuffledProducts, selectedCategories, searchQuery]);
 
   // 当前显示的产品
   const visibleProducts = filteredProducts.slice(0, visibleCount);
@@ -188,17 +195,49 @@ export default function DirectoryClient({ initialProducts, initialCategories }: 
   // 当筛选条件改变时重置显示数量
   useEffect(() => {
     setVisibleCount(ITEMS_PER_PAGE);
-  }, [activeCategory, searchQuery]);
+  }, [selectedCategories, searchQuery]);
 
-  // 构建分类列表
-  const categoryList = [
-    { id: "all", label: "全部", icon: "📦" },
-    ...initialCategories.map((cat) => ({
-      id: cat,
-      label: categoryLabels[cat]?.label || cat,
-      icon: categoryLabels[cat]?.icon || "📁",
-    })),
+  // 预定义的分类顺序
+  const predefinedCategories = [
+    "通用助手",
+    "图像生成",
+    "视频创作",
+    "音频处理",
+    "编程开发",
+    "智能搜索",
+    "知识管理",
+    "写作辅助",
+    "智能硬件",
+    "虚拟陪伴",
+    "Agent构建",
+    "效率工具",
+    "3D生成",
+    "科研辅助",
+    "其他类型",
   ];
+
+  // 构建分类列表（使用预定义顺序，不包含 "all"）
+  const categoryList = predefinedCategories.map((cat) => ({
+    id: cat,
+    label: categoryLabels[cat]?.label || cat,
+    icon: categoryLabels[cat]?.icon || "📁",
+  }));
+
+  // 切换分类选择
+  const toggleCategory = (categoryId: string) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(categoryId)) {
+        return prev.filter((c) => c !== categoryId);
+      } else {
+        return [...prev, categoryId];
+      }
+    });
+  };
+
+  // 清除所有筛选
+  const clearFilters = () => {
+    setSelectedCategories([]);
+  };
 
   return (
     <div className="pt-20 sm:pt-24 pb-16 sm:pb-20 px-4 sm:px-6">
@@ -225,85 +264,108 @@ export default function DirectoryClient({ initialProducts, initialCategories }: 
           </div>
         </div>
 
-        {/* Mobile Filter Toggle */}
-        <button
-          onClick={() => setShowMobileFilters(!showMobileFilters)}
-          className="lg:hidden flex items-center gap-2 mb-4 px-4 py-2 bg-[var(--card)] border border-[var(--border)] rounded-lg text-sm"
-        >
-          {showMobileFilters ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          筛选分类
-        </button>
-
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-8">
-          {/* Sidebar Filters */}
-          <aside className={`lg:col-span-3 ${showMobileFilters ? 'block' : 'hidden lg:block'}`}>
-            <div className="lg:sticky lg:top-28 space-y-6">
-              <div>
-                <h3 className="text-sm font-semibold mb-3 text-[var(--muted-foreground)]">分类</h3>
-                <div className="flex flex-wrap gap-2 lg:flex-col lg:gap-0 lg:space-y-1">
-                  {categoryList.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => {
-                        setActiveCategory(cat.id);
-                        setShowMobileFilters(false);
-                      }}
-                      className={`px-3 py-2 lg:w-full lg:text-left lg:px-4 lg:py-2.5 rounded-lg text-sm transition-all flex items-center gap-2 ${
-                        activeCategory === cat.id
-                          ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
-                          : "bg-[var(--card)] lg:bg-transparent text-[var(--muted-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)] border border-[var(--border)] lg:border-0"
-                      }`}
-                    >
-                      <span>{cat.icon}</span>
-                      <span>{cat.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          {/* Product Grid */}
-          <main className="lg:col-span-9">
-            <div className="mb-4 sm:mb-6 flex items-center justify-between">
-              <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">
-                共 <span className="text-[var(--foreground)] font-medium">{filteredProducts.length}</span> 个产品
-                {hasMore && (
-                  <span className="text-[var(--muted-foreground)]">
-                    ，已显示 {visibleProducts.length} 个
-                  </span>
-                )}
-              </p>
-            </div>
-
-            {filteredProducts.length === 0 ? (
-              <div className="text-center py-16 sm:py-20">
-                <p className="text-[var(--muted-foreground)]">暂无产品数据</p>
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-                  {visibleProducts.map((product, index) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      isVisible={true}
-                    />
-                  ))}
-                </div>
-
-                {/* Load More Trigger */}
-                {hasMore && (
-                  <div ref={loadMoreRef} className="flex justify-center py-8">
-                    <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
-                      <div className="w-5 h-5 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
-                      加载更多...
-                    </div>
-                  </div>
-                )}
-              </>
+        {/* Category Filters - Multi-select with Checkboxes */}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-[var(--muted-foreground)] whitespace-nowrap">类别筛选:</span>
+            {selectedCategories.length > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-xs text-[var(--primary)] hover:underline"
+              >
+                清除筛选 ({selectedCategories.length})
+              </button>
             )}
-          </main>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {/* 全部类型按钮 */}
+            <button
+              onClick={clearFilters}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all whitespace-nowrap border ${
+                selectedCategories.length === 0
+                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-medium"
+                  : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:border-[var(--primary)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              <div
+                className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+                  selectedCategories.length === 0
+                    ? "bg-white border-white"
+                    : "border-[var(--muted-foreground)]/50"
+                }`}
+              >
+                {selectedCategories.length === 0 && <Check className="w-3 h-3 text-[var(--primary)]" />}
+              </div>
+              <span>全部类型</span>
+            </button>
+            {categoryList.map((cat) => {
+              const isSelected = selectedCategories.includes(cat.id);
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => toggleCategory(cat.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all whitespace-nowrap border ${
+                    isSelected
+                      ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] font-medium"
+                      : "bg-[var(--card)] text-[var(--muted-foreground)] border-[var(--border)] hover:border-[var(--primary)] hover:text-[var(--foreground)]"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+                      isSelected
+                        ? "bg-white border-white"
+                        : "border-[var(--muted-foreground)]/50"
+                    }`}
+                  >
+                    {isSelected && <Check className="w-3 h-3 text-[var(--primary)]" />}
+                  </div>
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Product Grid */}
+        <div>
+          <div className="mb-4 sm:mb-6 flex items-center justify-between">
+            <p className="text-xs sm:text-sm text-[var(--muted-foreground)]">
+              共 <span className="text-[var(--foreground)] font-medium">{filteredProducts.length}</span> 个产品
+              {hasMore && (
+                <span className="text-[var(--muted-foreground)]">
+                  ，已显示 {visibleProducts.length} 个
+                </span>
+              )}
+            </p>
+          </div>
+
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-16 sm:py-20">
+              <p className="text-[var(--muted-foreground)]">暂无产品数据</p>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+                {visibleProducts.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    isVisible={true}
+                  />
+                ))}
+              </div>
+
+              {/* Load More Trigger */}
+              {hasMore && (
+                <div ref={loadMoreRef} className="flex justify-center py-8">
+                  <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
+                    <div className="w-5 h-5 border-2 border-[var(--primary)] border-t-transparent rounded-full animate-spin" />
+                    加载更多...
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </div>
 

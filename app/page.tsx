@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SubscribeSuccessModal from "@/components/SubscribeSuccessModal";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -18,12 +19,30 @@ import { useEffect, useState } from "react";
 import { getProducts, getDeepDiveProducts, type Product } from "@/lib/supabase";
 import { FadeInUp, StaggerContainer, StaggerItem, Parallax, ScaleIn } from "@/components/Animations";
 
+interface SubscribeModalData {
+  email: string;
+  featuredProduct?: {
+    name: string;
+    slug: string;
+    tagline: string;
+    category: string;
+    logo_url?: string;
+    has_deep_dive?: boolean;
+  };
+  otherProductsCount: number;
+}
+
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [email, setEmail] = useState("");
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [subscribeMessage, setSubscribeMessage] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [deepDiveProducts, setDeepDiveProducts] = useState<Product[]>([]);
+
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState<SubscribeModalData | null>(null);
 
   useEffect(() => {
     setIsLoaded(true);
@@ -43,13 +62,49 @@ export default function Home() {
     }
   }
 
-  const handleSubscribe = () => {
-    if (email && email.includes("@")) {
-      setIsSubscribed(true);
-      setTimeout(() => {
-        setIsSubscribed(false);
+  const handleSubscribe = async () => {
+    if (!email || !email.includes("@")) {
+      setSubscribeStatus("error");
+      setSubscribeMessage("请输入有效的邮箱地址");
+      return;
+    }
+
+    setSubscribeStatus("loading");
+
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubscribeStatus("success");
+        setSubscribeMessage(data.message || "订阅成功！");
+
+        // 显示成功弹窗
+        setModalData({
+          email,
+          featuredProduct: data.featuredProduct,
+          otherProductsCount: data.otherProductsCount || 0,
+        });
+        setShowModal(true);
         setEmail("");
-      }, 2000);
+
+        // 3秒后重置状态
+        setTimeout(() => {
+          setSubscribeStatus("idle");
+          setSubscribeMessage("");
+        }, 3000);
+      } else {
+        setSubscribeStatus("error");
+        setSubscribeMessage(data.error || "订阅失败，请稍后重试");
+      }
+    } catch (error) {
+      setSubscribeStatus("error");
+      setSubscribeMessage("网络错误，请稍后重试");
     }
   };
 
@@ -72,7 +127,7 @@ export default function Home() {
                   isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                 }`}
               >
-                srcent
+                Srcent
               </h1>
 
               <div
@@ -81,7 +136,7 @@ export default function Home() {
                 }`}
               >
                 <b className="font-semibold text-orange-500 text-xl md:text-3xl">
-                  AI 产品发现平台
+                  AI 产品拆解平台
                 </b>{" "}
                 / 洞察设计灵魂，解读产品价值
               </div>
@@ -144,27 +199,49 @@ export default function Home() {
       {/* Email Subscription Section */}
       <section className="my-20 flex items-center justify-center px-4 py-16">
         <div className="mx-auto w-full max-w-xl text-center">
-          <h2 className="mb-6 text-3xl font-bold">订阅 AI 产品日报</h2>
+          <h2 className="mb-6 text-3xl font-bold">订阅 AI 产品拆解日报</h2>
           <p className="mb-8 text-[var(--muted-foreground)]">
-            每周精选优质 AI 产品，深度解析设计理念与使用场景
+            每天早上 9:00 准时送达，精选优质 AI 产品深度解析
           </p>
-          <div className="mx-auto flex max-w-md items-center gap-2">
-            <div className="relative flex-1">
+          <div className="mx-auto flex max-w-md flex-col items-center gap-3">
+            <div className="relative w-full flex-1">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                className="flex h-11 w-full border border-[var(--border)] bg-transparent px-4 py-1 text-sm transition-colors focus:outline-none focus:ring-0 focus:border-orange-500 rounded-full"
+                disabled={subscribeStatus === "loading" || subscribeStatus === "success"}
+                className="flex h-12 w-full border border-[var(--border)] bg-transparent px-4 py-1 text-sm transition-colors focus:outline-none focus:ring-0 focus:border-orange-500 rounded-full disabled:opacity-50"
                 placeholder="输入邮箱地址"
               />
               <button
                 onClick={handleSubscribe}
-                className="absolute -right-1 top-1/2 -translate-y-1/2 h-11 px-6 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-sm font-medium hover:bg-[var(--primary)]/90 transition-all"
+                disabled={subscribeStatus === "loading" || subscribeStatus === "success"}
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-10 px-6 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-full text-sm font-medium hover:bg-[var(--primary)]/90 transition-all disabled:opacity-70"
               >
-                {isSubscribed ? "已订阅" : "立即订阅"}
+                {subscribeStatus === "loading" ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    订阅中
+                  </span>
+                ) : subscribeStatus === "success" ? (
+                  <span className="flex items-center gap-2">
+                    <Check className="h-4 w-4" />
+                    已订阅
+                  </span>
+                ) : (
+                  "立即订阅"
+                )}
               </button>
             </div>
+            {subscribeMessage && (
+              <p className={`text-sm ${subscribeStatus === "error" ? "text-red-500" : "text-green-500"}`}>
+                {subscribeMessage}
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -533,6 +610,17 @@ export default function Home() {
       </section>
 
       <Footer />
+
+      {/* Subscribe Success Modal */}
+      {modalData && (
+        <SubscribeSuccessModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          email={modalData.email}
+          featuredProduct={modalData.featuredProduct}
+          otherProductsCount={modalData.otherProductsCount}
+        />
+      )}
     </>
   );
 }
