@@ -9,13 +9,16 @@
     "lint": "next lint",
     "ingest": "cd scripts && npm run ingest",
     "ingest:install": "cd scripts && npm install",
-    "ingest:deep": "cd scripts && npm run ingest:deep"
+    "ingest:deep": "cd scripts && npm run ingest:deep",
+    "ingest:text": "cd scripts && npm run ingest:text",
+    "migrate:categories": "cd scripts && npm run migrate:categories"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "AI 产品深度拆解平台",
   "dependencies": {
+    "@react-email/components": "^0.5.7",
     "@supabase/supabase-js": "^2.86.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.25",
@@ -24,6 +27,7 @@
     "next": "^16.0.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "resend": "^6.6.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^3.4.18"
   },
